@@ -94,10 +94,10 @@ update_orders   PUT      /orders/<order_id>
 delete_orders   DELETE   /orders/<order_id>
 
 list_items      GET      /orders/<int:order_id>/items
-create_items    POST     /orders/<account_id>/items
-get_items       GET      /orders/<account_id>/items/<item_id>
-update_items    PUT      /orders/<account_id>/items/<item_id>
-delete_items    DELETE   /orders/<account_id>/items/<item_id>
+create_items    POST     /orders/<order_id>/items
+get_items       GET      /orders/<order_id>/items/<item_id>
+update_items    PUT      /orders/<order_id>/items/<item_id>
+delete_items    DELETE   /orders/<order_id>/items/<item_id>
 ```
 The test cases have 95% test coverage and can be run with `nosetests`
 
