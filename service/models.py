@@ -1,86 +1,66 @@
 """
-Models for YourResourceModel
+Models for Order
 
 All of the models are stored in this module
 """
 import logging
 from flask_sqlalchemy import SQLAlchemy
+from datetime import date
+from abc import abstractmethod
 
 logger = logging.getLogger("flask.app")
 
 # Create the SQLAlchemy object to be initialized later in init_db()
 db = SQLAlchemy()
 
-
-# Function to initialize the database
 def init_db(app):
-    """ Initializes the SQLAlchemy app """
-    YourResourceModel.init_db(app)
+    """Initialize the SQLAlchemy app"""
+    Order.init_db(app)
 
 
 class DataValidationError(Exception):
     """ Used for an data validation errors when deserializing """
 
 
-class YourResourceModel(db.Model):
-    """
-    Class that represents a YourResourceModel
-    """
 
-    app = None
+######################################################################
+#  P E R S I S T E N T   B A S E   M O D E L
+######################################################################
+class PersistentBase:
+    """Base class added persistent methods"""
 
-    # Table Schema
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(63))
+    def __init__(self):
+        self.id = None  # pylint: disable=invalid-name
 
-    def __repr__(self):
-        return f"<YourResourceModel {self.name} id=[{self.id}]>"
+    @abstractmethod
+    def serialize(self) -> dict:
+        """Convert an object into a dictionary"""
+
+    @abstractmethod
+    def deserialize(self, data: dict) -> None:
+        """Convert a dictionary into an object"""
 
     def create(self):
         """
-        Creates a YourResourceModel to the database
+        Creates an Order to the database
         """
         logger.info("Creating %s", self.name)
-        self.id = None  # pylint: disable=invalid-name
+        self.id = None  # id must be none to generate next primary key
         db.session.add(self)
         db.session.commit()
 
     def update(self):
         """
-        Updates a YourResourceModel to the database
+        Updates an Order to the database
         """
-        logger.info("Saving %s", self.name)
+        logger.info("Updating %s", self.name)
         db.session.commit()
 
     def delete(self):
-        """ Removes a YourResourceModel from the data store """
+        """Removes an Order from the data store"""
         logger.info("Deleting %s", self.name)
         db.session.delete(self)
         db.session.commit()
-
-    def serialize(self):
-        """ Serializes a YourResourceModel into a dictionary """
-        return {"id": self.id, "name": self.name}
-
-    def deserialize(self, data):
-        """
-        Deserializes a YourResourceModel from a dictionary
-
-        Args:
-            data (dict): A dictionary containing the resource data
-        """
-        try:
-            self.name = data["name"]
-        except KeyError as error:
-            raise DataValidationError(
-                "Invalid YourResourceModel: missing " + error.args[0]
-            ) from error
-        except TypeError as error:
-            raise DataValidationError(
-                "Invalid YourResourceModel: body of request contained bad or no data - "
-                "Error message: " + error
-            ) from error
-        return self
 
     @classmethod
     def init_db(cls, app):
@@ -94,22 +74,149 @@ class YourResourceModel(db.Model):
 
     @classmethod
     def all(cls):
-        """ Returns all of the YourResourceModels in the database """
-        logger.info("Processing all YourResourceModels")
+        """Returns all of the records in the database"""
+        logger.info("Processing all records")
         return cls.query.all()
 
     @classmethod
     def find(cls, by_id):
-        """ Finds a YourResourceModel by it's ID """
+        """Finds a record by it's ID"""
         logger.info("Processing lookup for id %s ...", by_id)
         return cls.query.get(by_id)
 
-    @classmethod
-    def find_by_name(cls, name):
-        """Returns all YourResourceModels with the given name
+
+######################################################################
+#  I T E M   M O D E L
+######################################################################
+class Item(db.Model, PersistentBase):
+    """
+    Class that represents an Item
+    """
+
+    # Table Schema
+    id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey("order.id", ondelete="CASCADE"), nullable=False)
+    item_price = db.Column(db.Float)
+    sku = db.Column(db.Integer)
+    # name = db.Column(db.String(64))  # e.g., work, home, vacation, etc.
+    # street = db.Column(db.String(64))
+    # city = db.Column(db.String(64))
+    # state = db.Column(db.String(2))
+    # postal_code = db.Column(db.String(16))
+
+    def __repr__(self):
+        return f"<Item {self.name} id=[{self.id}] account[{self.order_id}]>"
+
+    def __str__(self):
+        return f"{self.name}: {self.street}, {self.city}, {self.state} {self.postal_code}"
+
+    def serialize(self) -> dict:
+        """Converts an Item into a dictionary"""
+        return {
+            "id": self.id,
+            "order_id": self.order_id,
+            "item_price": self.item_price,
+            "sku": self.sku,
+            # "city": self.city,
+            # "state": self.state,
+            # "postal_code": self.postal_code
+        }
+
+    def deserialize(self, data: dict) -> None:
+        """
+        Populates an Item from a dictionary
 
         Args:
-            name (string): the name of the YourResourceModels you want to match
+            data (dict): A dictionary containing the resource data
+        """
+        try:
+            self.order_id = data["order_id"]
+            self.item_price = data["item_price"]
+            self.sku = data["sku"]
+            # self.city = data["city"]
+            # self.state = data["state"]
+            # self.postal_code = data["postal_code"]
+        except KeyError as error:
+            raise DataValidationError("Invalid Item: missing " + error.args[0]) from error
+        except TypeError as error:
+            raise DataValidationError(
+                "Invalid Item: body of request contained "
+                "bad or no data " + error.args[0]
+            ) from error
+        return self
+
+
+######################################################################
+#  O R D E R   M O D E L
+######################################################################
+class Order(db.Model, PersistentBase):
+    """
+    Class that represents an Order
+    """
+
+    app = None
+
+    # Table Schema
+    id = db.Column(db.Integer, primary_key=True)
+    # name = db.Column(db.String(64))  # e.g., work, home, vacation, etc.
+    # street = db.Column(db.String(64))
+    # city = db.Column(db.String(64))
+    # state = db.Column(db.String(2))
+    # postal_code = db.Column(db.String(16))
+    date_created = db.Column(db.Date(), nullable=False, default=date.today())
+    items = db.relationship("Order", backref="order", passive_deletes=True)
+    
+
+    def __repr__(self):
+        return f"<Order {self.name} id=[{self.id}]>"
+
+    def serialize(self):
+        """Converts an Order into a dictionary"""
+        order = {
+            "id": self.id,
+            "name": self.name,
+            "email": self.email,
+            "phone_number": self.phone_number,
+            "date_created": self.date_created.isoformat(),
+            "items": [],
+        }
+        for address in self.items:
+            order["items"].append(address.serialize())
+        return order
+
+    def deserialize(self, data):
+        """
+        Populates an Order from a dictionary
+
+        Args:
+            data (dict): A dictionary containing the resource data
+        """
+        try:
+            self.name = data["name"]
+            self.email = data["email"]
+            self.phone_number = data.get("phone_number")
+            self.date_created = date.fromisoformat(data["date_created"])
+            # handle inner list of items
+            address_list = data.get("items")
+            for json_address in address_list:
+                address = Address()
+                address.deserialize(json_address)
+                self.items.append(address)
+        except KeyError as error:
+            raise DataValidationError("Invalid Account: missing " + error.args[0]) from error
+        except TypeError as error:
+            raise DataValidationError(
+                "Invalid Account: body of request contained "
+                "bad or no data - " + error.args[0]
+            ) from error
+        return self
+
+    @classmethod
+    def find_by_name(cls, name):
+        """Returns all Accounts with the given name
+
+        Args:
+            name (string): the name of the Accounts you want to match
         """
         logger.info("Processing name query for %s ...", name)
         return cls.query.filter(cls.name == name)
