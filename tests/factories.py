@@ -16,50 +16,52 @@
 Test Factory to make fake objects for testing
 """
 from datetime import date
+import random
 import factory
-from factory.fuzzy import FuzzyChoice, FuzzyDate
-from service.models import Account, Address
+from factory.fuzzy import FuzzyDate
+from service.models import Order, Item
 
 
-class AccountFactory(factory.Factory):
-    """Creates fake Accounts"""
+class OrderFactory(factory.Factory):
+    """Creates fake Orders"""
 
     # pylint: disable=too-few-public-methods
     class Meta:
         """Persistent class"""
-        model = Account
+        model = Order
 
     id = factory.Sequence(lambda n: n)
     name = factory.Faker("name")
-    email = factory.Faker("email")
-    phone_number = factory.Faker("phone_number")
-    date_joined = FuzzyDate(date(2008, 1, 1))
+    street = factory.Faker("street_address")
+    city = factory.Faker("city")
+    state = factory.Faker("state_abbr")
+    postal_code = factory.Faker("postalcode")
+    shipping_price = round(random.uniform(1.00, 100.00), 2)
+    date_created = FuzzyDate(date(2008, 1, 1))
     # the many side of relationships can be a little wonky in factory boy:
     # https://factoryboy.readthedocs.io/en/latest/recipes.html#simple-many-to-many-relationship
 
     @factory.post_generation
-    def addresses(self, create, extracted, **kwargs):   # pylint: disable=method-hidden, unused-argument
+    def items(self, create, extracted, **kwargs):   # pylint: disable=method-hidden, unused-argument
         """Creates the addresses list"""
         if not create:
             return
 
         if extracted:
-            self.addresses = extracted
+            self.items = extracted
 
 
-class AddressFactory(factory.Factory):
-    """Creates fake Addresses"""
+class ItemFactory(factory.Factory):
+    """Creates fake Items"""
 
     # pylint: disable=too-few-public-methods
     class Meta:
         """Persistent class"""
-        model = Address
+        model = Item
 
+            #     self.order_id = data["order_id"]
+            # self.item_price = data["item_price"]
+            # self.sku = data["sku"]
     id = factory.Sequence(lambda n: n)
-    account_id = None
-    name = FuzzyChoice(choices=["home", "work", "other"])
-    street = factory.Faker("street_address")
-    city = factory.Faker("city")
-    state = factory.Faker("state_abbr")
-    postal_code = factory.Faker("postalcode")
-    account = factory.SubFactory(AccountFactory)
+    order_id = None
+    order = factory.SubFactory(OrderFactory)

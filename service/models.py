@@ -98,17 +98,12 @@ class Item(db.Model, PersistentBase):
     order_id = db.Column(db.Integer, db.ForeignKey("order.id", ondelete="CASCADE"), nullable=False)
     item_price = db.Column(db.Float)
     sku = db.Column(db.Integer)
-    # name = db.Column(db.String(64))  # e.g., work, home, vacation, etc.
-    # street = db.Column(db.String(64))
-    # city = db.Column(db.String(64))
-    # state = db.Column(db.String(2))
-    # postal_code = db.Column(db.String(16))
 
     def __repr__(self):
-        return f"<Item {self.name} id=[{self.id}] account[{self.order_id}]>"
+        return f"<Item {self.order_id} id=[{self.id}] order[{self.order_id}]>"
 
     def __str__(self):
-        return f"{self.name}: {self.street}, {self.city}, {self.state} {self.postal_code}"
+        return f"{self.order_id}: {self.item_price}, {self.sku}"
 
     def serialize(self) -> dict:
         """Converts an Item into a dictionary"""
@@ -116,10 +111,7 @@ class Item(db.Model, PersistentBase):
             "id": self.id,
             "order_id": self.order_id,
             "item_price": self.item_price,
-            "sku": self.sku,
-            # "city": self.city,
-            # "state": self.state,
-            # "postal_code": self.postal_code
+            "sku": self.sku
         }
 
     def deserialize(self, data: dict) -> None:
@@ -133,9 +125,6 @@ class Item(db.Model, PersistentBase):
             self.order_id = data["order_id"]
             self.item_price = data["item_price"]
             self.sku = data["sku"]
-            # self.city = data["city"]
-            # self.state = data["state"]
-            # self.postal_code = data["postal_code"]
         except KeyError as error:
             raise DataValidationError("Invalid Item: missing " + error.args[0]) from error
         except TypeError as error:
@@ -154,17 +143,18 @@ class Order(db.Model, PersistentBase):
     Class that represents an Order
     """
 
-    app = None
+    # app = None
 
     # Table Schema
     id = db.Column(db.Integer, primary_key=True)
-    # name = db.Column(db.String(64))  # e.g., work, home, vacation, etc.
-    # street = db.Column(db.String(64))
-    # city = db.Column(db.String(64))
-    # state = db.Column(db.String(2))
-    # postal_code = db.Column(db.String(16))
+    name = db.Column(db.String(64))
+    street = db.Column(db.String(64), nullable=True)
+    city = db.Column(db.String(64))
+    state = db.Column(db.String(2))
+    postal_code = db.Column(db.String(16))
+    shipping_price = db.Column(db.Float)
     date_created = db.Column(db.Date(), nullable=False, default=date.today())
-    items = db.relationship("Order", backref="order", passive_deletes=True)
+    items = db.relationship("Item", backref="order", passive_deletes=True, lazy="dynamic")
     
 
     def __repr__(self):
@@ -175,13 +165,16 @@ class Order(db.Model, PersistentBase):
         order = {
             "id": self.id,
             "name": self.name,
-            "email": self.email,
-            "phone_number": self.phone_number,
+            "street": self.street,
+            "city": self.city,
+            "state": self.state,
+            "postal_code": self.postal_code,
+            "shipping_price": self.shipping_price,
             "date_created": self.date_created.isoformat(),
-            "items": [],
+            "items": []
         }
-        for address in self.items:
-            order["items"].append(address.serialize())
+        for item in self.items:
+            order["items"].append(item.serialize())
         return order
 
     def deserialize(self, data):
@@ -193,15 +186,18 @@ class Order(db.Model, PersistentBase):
         """
         try:
             self.name = data["name"]
-            self.email = data["email"]
-            self.phone_number = data.get("phone_number")
+            self.street = data["street"]
+            self.city = data["city"]
+            self.state = data["state"]
+            self.postal_code = data["postal_code"]
+            self.shipping_price = data["shipping_price"]
             self.date_created = date.fromisoformat(data["date_created"])
             # handle inner list of items
-            address_list = data.get("items")
-            for json_address in address_list:
-                address = Address()
-                address.deserialize(json_address)
-                self.items.append(address)
+            item_list = data.get("items")
+            for json_item in item_list:
+                item = Item()
+                item.deserialize(json_item)
+                self.items.append(item)
         except KeyError as error:
             raise DataValidationError("Invalid Account: missing " + error.args[0]) from error
         except TypeError as error:
