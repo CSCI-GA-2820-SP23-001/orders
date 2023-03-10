@@ -71,7 +71,7 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(order.date_created, fake_order.date_created)
 
     def test_add_an_order(self):
-        """It should Create an account and add it to the database"""
+        """It should Create an order and add it to the database"""
         orders = Order.all()
         self.assertEqual(orders, [])
         order = OrderFactory()
@@ -205,7 +205,7 @@ class TestOrder(unittest.TestCase):
         self.assertRaises(DataValidationError, address.deserialize, [])
 
     def test_add_order_address(self):
-        """It should Create an account with an item and add it to the database"""
+        """It should Create an order with an item and add it to the database"""
         orders = Order.all()
         self.assertEqual(orders, [])
         order = OrderFactory()
