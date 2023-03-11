@@ -44,7 +44,7 @@ class PersistentBase:
         """
         Creates an Order to the database
         """
-        logger.info("Creating %s", self.name)
+        logger.info("Creating %s", self.id)
         self.id = None  # id must be none to generate next primary key
         db.session.add(self)
         db.session.commit()
@@ -53,12 +53,12 @@ class PersistentBase:
         """
         Updates an Order to the database
         """
-        logger.info("Updating %s", self.name)
+        logger.info("Updating %s", self.id)
         db.session.commit()
 
     def delete(self):
         """Removes an Order from the data store"""
-        logger.info("Deleting %s", self.name)
+        logger.info("Deleting %s", self.id)
         db.session.delete(self)
         db.session.commit()
 
@@ -154,11 +154,11 @@ class Order(db.Model, PersistentBase):
     postal_code = db.Column(db.String(16))
     shipping_price = db.Column(db.Float)
     date_created = db.Column(db.Date(), nullable=False, default=date.today())
-    items = db.relationship("Item", backref="order", passive_deletes=True, lazy="dynamic")
+    items = db.relationship("Item", backref="order", passive_deletes=True)
     
 
     def __repr__(self):
-        return f"<Order {self.name} id=[{self.id}]>"
+        return f"<Order id=[{self.id}]>"
 
     def serialize(self):
         """Converts an Order into a dictionary"""

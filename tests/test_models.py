@@ -82,12 +82,19 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(len(orders), 1)
 
     def test_read_order(self):
-        """It should Read an account"""
+        """It should Read an order"""
         order = OrderFactory()
         order.create()
+        # import pdb
 
         # Read it back
         found_order = Order.find(order.id)
+        # pdb.set_trace() 
+
+        print("FOUND ORDER HERE")
+        print(found_order)
+        print("FOUND ORDER ITEM")
+        print(found_order.items)
         self.assertEqual(found_order.id, order.id)
         self.assertEqual(found_order.name, order.name)
         self.assertEqual(found_order.street, order.street)
@@ -98,8 +105,10 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(found_order.date_created, order.date_created)
         self.assertEqual(found_order.items, [])
 
+
+
     def test_update_order(self):
-        """It should Update an account"""
+        """It should Update an order"""
         order = OrderFactory(name="barton consedine")
         order.create()
         # Assert that it was assigned an id and shows up in the database
@@ -116,16 +125,16 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(order.name, "Sienna consedine")
 
     def test_delete_an_order(self):
-        """It should Delete an account from the database"""
+        """It should Delete an order from the database"""
         orders = Order.all()
         self.assertEqual(orders, [])
-        account = OrderFactory()
+        order = OrderFactory()
         order.create()
         # Assert that it was assigned an id and shows up in the database
         self.assertIsNotNone(order.id)
         orders = Order.all()
         self.assertEqual(len(orders), 1)
-        account = orders[0]
+        order = orders[0]
         order.delete()
         orders = Order.all()
         self.assertEqual(len(orders), 0)
@@ -142,7 +151,7 @@ class TestOrder(unittest.TestCase):
 
     def test_find_by_name(self):
         """It should Find an Account by name"""
-        account = OrderFactory()
+        order = OrderFactory()
         order.create()
 
         # Fetch it back by name
@@ -151,7 +160,7 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(same_order.name, order.name)
 
     def test_serialize_an_order(self):
-        """It should Serialize an account"""
+        """It should Serialize an order"""
         order = OrderFactory()
         item = ItemFactory()
         order.items.append(item)
@@ -161,20 +170,20 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(serial_order["email"], order.email)
         self.assertEqual(serial_order["phone_number"], order.phone_number)
         self.assertEqual(serial_order["date_joined"], str(order.date_joined))
-        self.assertEqual(len(serial_order["addresses"]), 1)
-        addresses = serial_order["addresses"]
-        self.assertEqual(addresses[0]["id"], address.id)
-        self.assertEqual(addresses[0]["account_id"], address.account_id)
-        self.assertEqual(addresses[0]["name"], address.name)
-        self.assertEqual(addresses[0]["street"], address.street)
-        self.assertEqual(addresses[0]["city"], address.city)
-        self.assertEqual(addresses[0]["state"], address.state)
-        self.assertEqual(addresses[0]["postal_code"], address.postal_code)
+        self.assertEqual(len(serial_order["items"]), 1)
+        items = serial_order["items"]
+        self.assertEqual(items[0]["id"], item.id)
+        self.assertEqual(items[0]["account_id"], item.account_id)
+        self.assertEqual(items[0]["name"], item.name)
+        self.assertEqual(items[0]["street"], item.street)
+        self.assertEqual(items[0]["city"], item.city)
+        self.assertEqual(items[0]["state"], item.state)
+        self.assertEqual(items[0]["postal_code"], item.postal_code)
 
     def test_deserialize_an_order(self):
-        """It should Deserialize an account"""
-        account = OrderFactory()
-        order.items.append(AddressFactory())
+        """It should Deserialize an order"""
+        order = OrderFactory()
+        order.items.append(ItemFactory())
         order.create()
         serial_order = order.serialize()
         new_order = Order()
@@ -185,26 +194,26 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(new_order.date_joined, order.date_joined)
 
     def test_deserialize_with_key_error(self):
-        """It should not Deserialize an account with a KeyError"""
-        account = Order()
+        """It should not Deserialize an order with a KeyError"""
+        order = Order()
         self.assertRaises(DataValidationError, order.deserialize, {})
 
     def test_deserialize_with_type_error(self):
-        """It should not Deserialize an account with a TypeError"""
-        account = Order()
+        """It should not Deserialize an order with a TypeError"""
+        order = Order()
         self.assertRaises(DataValidationError, order.deserialize, [])
 
-    def test_deserialize_address_key_error(self):
-        """It should not Deserialize an address with a KeyError"""
-        address = Address()
-        self.assertRaises(DataValidationError, address.deserialize, {})
+    def test_deserialize_item_key_error(self):
+        """It should not Deserialize an item with a KeyError"""
+        item = Item()
+        self.assertRaises(DataValidationError, item.deserialize, {})
 
-    def test_deserialize_address_type_error(self):
-        """It should not Deserialize an address with a TypeError"""
-        address = Address()
-        self.assertRaises(DataValidationError, address.deserialize, [])
+    def test_deserialize_item_type_error(self):
+        """It should not Deserialize an item with a TypeError"""
+        item = Item()
+        self.assertRaises(DataValidationError, item.deserialize, [])
 
-    def test_add_order_address(self):
+    def test_add_order_item(self):
         """It should Create an order with an item and add it to the database"""
         orders = Order.all()
         self.assertEqual(orders, [])
@@ -218,7 +227,7 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(len(orders), 1)
 
         new_order = Order.find(order.id)
-        self.assertEqual(new_order.items[0].name, item.name)
+        self.assertEqual(new_order.items[0].item_price, item.item_price)
 
         item2 = ItemFactory(order=order)
         order.items.append(item2)
@@ -226,15 +235,15 @@ class TestOrder(unittest.TestCase):
 
         new_order = Order.find(order.id)
         self.assertEqual(len(new_order.items), 2)
-        self.assertEqual(new_order.items[1].name, item2.name)
+        self.assertEqual(new_order.items[1].item_price, item2.item_price)
 
-    def test_update_order_address(self):
-        """It should Update an orders address"""
+    def test_update_order_item(self):
+        """It should Update an orders item"""
         orders = Order.all()
         self.assertEqual(orders, [])
 
-        account = OrderFactory()
-        address = AddressFactory(account=account)
+        order = OrderFactory()
+        item = ItemFactory(order=order)
         order.create()
         # Assert that it was assigned an id and shows up in the database
         self.assertIsNotNone(order.id)
@@ -242,26 +251,26 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(len(orders), 1)
 
         # Fetch it back
-        account = Order.find(order.id)
-        old_address = order.addresses[0]
-        print("%r", old_address)
-        self.assertEqual(old_address.city, address.city)
+        order = Order.find(order.id)
+        old_item = order.items[0]
+        print("%r", old_item)
+        self.assertEqual(old_item.city, item.city)
         # Change the city
-        old_address.city = "XX"
+        old_item.city = "XX"
         order.update()
 
         # Fetch it back again
-        account = Order.find(order.id)
-        address = order.addresses[0]
-        self.assertEqual(address.city, "XX")
+        order = Order.find(order.id)
+        item = order.items[0]
+        self.assertEqual(item.city, "XX")
 
-    def test_delete_order_address(self):
-        """It should Delete an orders address"""
+    def test_delete_order_item(self):
+        """It should Delete an orders item"""
         orders = Order.all()
         self.assertEqual(orders, [])
 
-        account = OrderFactory()
-        address = AddressFactory(account=account)
+        order = OrderFactory()
+        item = ItemFactory(order=order)
         order.create()
         # Assert that it was assigned an id and shows up in the database
         self.assertIsNotNone(order.id)
@@ -269,11 +278,11 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(len(orders), 1)
 
         # Fetch it back
-        account = Order.find(order.id)
-        address = order.addresses[0]
-        address.delete()
+        order = Order.find(order.id)
+        item = order.items[0]
+        item.delete()
         order.update()
 
         # Fetch it back again
-        account = Order.find(order.id)
-        self.assertEqual(len(order.addresses), 0)
+        order = Order.find(order.id)
+        self.assertEqual(len(order.items), 0)

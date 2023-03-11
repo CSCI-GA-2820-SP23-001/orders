@@ -43,7 +43,7 @@ class OrderFactory(factory.Factory):
 
     @factory.post_generation
     def items(self, create, extracted, **kwargs):   # pylint: disable=method-hidden, unused-argument
-        """Creates the addresses list"""
+        """Creates the items list"""
         if not create:
             return
 
@@ -63,5 +63,7 @@ class ItemFactory(factory.Factory):
             # self.item_price = data["item_price"]
             # self.sku = data["sku"]
     id = factory.Sequence(lambda n: n)
+    sku = factory.Sequence(lambda n: n)
     order_id = None
     order = factory.SubFactory(OrderFactory)
+    
