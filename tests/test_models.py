@@ -1,5 +1,5 @@
 """
-Test cases for Account Model
+Test cases for Order Model
 
 """
 import logging
@@ -143,14 +143,14 @@ class TestOrder(unittest.TestCase):
         """It should List all orders in the database"""
         orders = Order.all()
         self.assertEqual(orders, [])
-        for account in OrderFactory.create_batch(5):
+        for order in OrderFactory.create_batch(5):
             order.create()
         # Assert that there are not 5 orders in the database
         orders = Order.all()
         self.assertEqual(len(orders), 5)
 
     def test_find_by_name(self):
-        """It should Find an Account by name"""
+        """It should Find an Order by name"""
         order = OrderFactory()
         order.create()
 
@@ -167,18 +167,17 @@ class TestOrder(unittest.TestCase):
         serial_order = order.serialize()
         self.assertEqual(serial_order["id"], order.id)
         self.assertEqual(serial_order["name"], order.name)
-        self.assertEqual(serial_order["email"], order.email)
-        self.assertEqual(serial_order["phone_number"], order.phone_number)
-        self.assertEqual(serial_order["date_joined"], str(order.date_joined))
+        self.assertEqual(serial_order["street"], order.street)
+        self.assertEqual(serial_order["city"], order.city)
+        self.assertEqual(serial_order["state"], order.state)
+        self.assertEqual(serial_order["postal_code"], order.postal_code)
+        self.assertEqual(serial_order["date_created"], str(order.date_created))
         self.assertEqual(len(serial_order["items"]), 1)
         items = serial_order["items"]
         self.assertEqual(items[0]["id"], item.id)
-        self.assertEqual(items[0]["account_id"], item.account_id)
-        self.assertEqual(items[0]["name"], item.name)
-        self.assertEqual(items[0]["street"], item.street)
-        self.assertEqual(items[0]["city"], item.city)
-        self.assertEqual(items[0]["state"], item.state)
-        self.assertEqual(items[0]["postal_code"], item.postal_code)
+        self.assertEqual(items[0]["order_id"], item.order_id)
+        self.assertEqual(items[0]["sku"], item.sku)
+        
 
     def test_deserialize_an_order(self):
         """It should Deserialize an order"""
@@ -189,9 +188,12 @@ class TestOrder(unittest.TestCase):
         new_order = Order()
         new_order.deserialize(serial_order)
         self.assertEqual(new_order.name, order.name)
-        self.assertEqual(new_order.email, order.email)
-        self.assertEqual(new_order.phone_number, order.phone_number)
-        self.assertEqual(new_order.date_joined, order.date_joined)
+        self.assertEqual(new_order.street, order.street)
+        self.assertEqual(new_order.city, order.city)
+        self.assertEqual(new_order.state, order.state)
+        self.assertEqual(new_order.postal_code, order.postal_code)
+        self.assertEqual(new_order.date_created, order.date_created)
+        self.assertEqual(new_order.date_created, order.date_created)
 
     def test_deserialize_with_key_error(self):
         """It should not Deserialize an order with a KeyError"""
@@ -254,15 +256,15 @@ class TestOrder(unittest.TestCase):
         order = Order.find(order.id)
         old_item = order.items[0]
         print("%r", old_item)
-        self.assertEqual(old_item.city, item.city)
-        # Change the city
-        old_item.city = "XX"
+        self.assertEqual(old_item.sku, item.sku)
+        # Change the sku
+        old_item.sku = 123456789
         order.update()
 
         # Fetch it back again
         order = Order.find(order.id)
         item = order.items[0]
-        self.assertEqual(item.city, "XX")
+        self.assertEqual(item.sku, 123456789)
 
     def test_delete_order_item(self):
         """It should Delete an orders item"""

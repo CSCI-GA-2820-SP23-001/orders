@@ -8,22 +8,22 @@ Test cases can be run with the following:
 import os
 import logging
 from unittest import TestCase
-from tests.factories import AccountFactory, AddressFactory
+from tests.factories import ItemFactory, OrderFactory
 from service.common import status  # HTTP Status Codes
-from service.models import db, Account, init_db
+from service.models import db, Order, init_db
 from service.routes import app
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/postgres"
 )
 
-BASE_URL = "/accounts"
+BASE_URL = "/orders"
 
 ######################################################################
 #  T E S T   C A S E S
 ######################################################################
 class TestAccountService(TestCase):
-    """Account Service Tests"""
+    """Order Service Tests"""
 
     @classmethod
     def setUpClass(cls):

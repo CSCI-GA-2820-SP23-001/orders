@@ -199,20 +199,20 @@ class Order(db.Model, PersistentBase):
                 item.deserialize(json_item)
                 self.items.append(item)
         except KeyError as error:
-            raise DataValidationError("Invalid Account: missing " + error.args[0]) from error
+            raise DataValidationError("Invalid Order: missing " + error.args[0]) from error
         except TypeError as error:
             raise DataValidationError(
-                "Invalid Account: body of request contained "
+                "Invalid Order: body of request contained "
                 "bad or no data - " + error.args[0]
             ) from error
         return self
 
     @classmethod
     def find_by_name(cls, name):
-        """Returns all Accounts with the given name
+        """Returns all Orders with the given name
 
         Args:
-            name (string): the name of the Accounts you want to match
+            name (string): the name of the Orders you want to match
         """
         logger.info("Processing name query for %s ...", name)
         return cls.query.filter(cls.name == name)
