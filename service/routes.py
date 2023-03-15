@@ -27,5 +27,40 @@ def index():
 ######################################################################
 #  R E S T   A P I   E N D P O I N T S
 ######################################################################
+@app.route("/orders", methods=["POST"])
+def create_order():
+    """
+    Creates an Order
+    This endpoint will create an Order based the data in the body that is posted
+    """
+    app.logger.info("Request to create an Order")
+    check_content_type("application/json")
 
-# Place your REST API code here ...
+    # Create the order
+    order = Order()
+    order.deserialize(request.get_json())
+    order.create()
+
+    # Create a message to return
+    message = order.serialize()
+    # location_url = url_for("get_order", order_id=order.id, _external=True)
+
+    return make_response(
+        jsonify(message), status.HTTP_201_CREATED, {"Location": "TODO"}
+    )
+
+######################################################################
+#  U T I L I T Y   F U N C T I O N S
+######################################################################
+
+
+def check_content_type(media_type):
+    """Checks that the media type is correct"""
+    content_type = request.headers.get("Content-Type")
+    if content_type and content_type == media_type:
+        return
+    app.logger.error("Invalid Content-Type: %s", content_type)
+    abort(
+        status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+        f"Content-Type must be {media_type}",
+    )
