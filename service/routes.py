@@ -27,6 +27,11 @@ def index():
 ######################################################################
 #  R E S T   A P I   E N D P O I N T S
 ######################################################################
+
+######################################################################
+# CREATE A NEW ORDER
+######################################################################
+
 @app.route("/orders", methods=["POST"])
 def create_order():
     """
@@ -48,6 +53,34 @@ def create_order():
     return make_response(
         jsonify(message), status.HTTP_201_CREATED, {"Location": "TODO"}
     )
+
+######################################################################
+# UPDATE AN EXISTING ORDER
+######################################################################
+
+@app.route("/orders/<int:order_id>", methods=["PUT"])
+def update_orders(order_id):
+    """
+    Update an Order
+    This endpoint will update an Order based the body that is posted
+    """
+    app.logger.info("Request to update order with id: %s", order_id)
+    check_content_type("application/json")
+
+    # See if the account exists and abort if it doesn't
+    order = Order.find(order_id)
+    if not order:
+        abort(
+            status.HTTP_404_NOT_FOUND, f"Order with id '{order_id}' was not found."
+        )
+
+    # Update from the json in the body of the request
+    order.deserialize(request.get_json())
+    order.id = order_id
+    order.update()
+
+    return make_response(jsonify(order.serialize()), status.HTTP_200_OK)
+
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
