@@ -154,7 +154,7 @@ class TestOrderService(TestCase):
             self.assertEqual(
                 resp.status_code,
                 status.HTTP_201_CREATED,
-                "Could not create test Account",
+                "Could not create test Order",
             )
             new_order = resp.get_json()
             order.id = new_order["id"]
@@ -179,7 +179,7 @@ class TestOrderService(TestCase):
         self.assertEqual(len(data), 5)
 
     def test_get_order_by_name(self):
-        """It should Get an Account by Name"""
+        """It should Get an Order by Name"""
         orders = self._create_orders(3)
         resp = self.client.get(
             BASE_URL, query_string=f"name={orders[1].name}")
@@ -205,9 +205,9 @@ class TestOrderService(TestCase):
 
     def test_create_order(self):
         """It should Create a new Order"""
-        order = AccountFactory()
+        order = OrderFactory()
         resp = self.client.post(
-            BASE_URL, json=account.serialize(), content_type="application/json"
+            BASE_URL, json=order.serialize(), content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
@@ -216,54 +216,54 @@ class TestOrderService(TestCase):
         self.assertIsNotNone(location)
 
     #     # Check the data is correct
-    #     new_account = resp.get_json()
-    #     self.assertEqual(new_account["name"], account.name, "Names does not match")
+    #     new_order = resp.get_json()
+    #     self.assertEqual(new_order["name"], order.name, "Names does not match")
     #     self.assertEqual(
-    #         new_account["addresses"], account.addresses, "Address does not match"
+    #         new_order["items"], order.items, "Address does not match"
     #     )
-    #     self.assertEqual(new_account["email"], account.email, "Email does not match")
+    #     self.assertEqual(new_order["email"], order.email, "Email does not match")
     #     self.assertEqual(
-    #         new_account["phone_number"], account.phone_number, "Phone does not match"
+    #         new_order["phone_number"], order.phone_number, "Phone does not match"
     #     )
     #     self.assertEqual(
-    #         new_account["date_joined"],
-    #         str(account.date_joined),
+    #         new_order["date_joined"],
+    #         str(order.date_joined),
     #         "Date Joined does not match",
     #     )
 
     #     # Check that the location header was correct by getting it
     #     resp = self.client.get(location, content_type="application/json")
     #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     new_account = resp.get_json()
-    #     self.assertEqual(new_account["name"], account.name, "Names does not match")
+    #     new_order = resp.get_json()
+    #     self.assertEqual(new_order["name"], order.name, "Names does not match")
     #     self.assertEqual(
-    #         new_account["addresses"], account.addresses, "Address does not match"
+    #         new_order["items"], order.items, "Address does not match"
     #     )
-    #     self.assertEqual(new_account["email"], account.email, "Email does not match")
+    #     self.assertEqual(new_order["email"], order.email, "Email does not match")
     #     self.assertEqual(
-    #         new_account["phone_number"], account.phone_number, "Phone does not match"
+    #         new_order["phone_number"], order.phone_number, "Phone does not match"
     #     )
     #     self.assertEqual(
-    #         new_account["date_joined"],
-    #         str(account.date_joined),
+    #         new_order["date_joined"],
+    #         str(order.date_joined),
     #         "Date Joined does not match",
     #     )
 
-    def test_update_account(self):
-        """It should Update an existing Account"""
+    def test_update_order(self):
+        """It should Update an existing Order"""
         # create an Order to update
-        test_order = AccountFactory()
-        resp = self.client.post(BASE_URL, json=test_account.serialize())
+        test_order = OrderFactory()
+        resp = self.client.post(BASE_URL, json=test_order.serialize())
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
     #     # update the pet
-    #     new_account = resp.get_json()
-    #     new_account["name"] = "Happy-Happy Joy-Joy"
-    #     new_account_id = new_account["id"]
-    #     resp = self.client.put(f"{BASE_URL}/{new_account_id}", json=new_account)
+    #     new_order = resp.get_json()
+    #     new_order["name"] = "Happy-Happy Joy-Joy"
+    #     new_order_id = new_order["id"]
+    #     resp = self.client.put(f"{BASE_URL}/{new_order_id}", json=new_order)
     #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     updated_account = resp.get_json()
-    #     self.assertEqual(updated_account["name"], "Happy-Happy Joy-Joy")
+    #     updated_order = resp.get_json()
+    #     self.assertEqual(updated_order["name"], "Happy-Happy Joy-Joy")
 
     # Test Delete order
 
@@ -281,9 +281,9 @@ class TestOrderService(TestCase):
 
     # def test_unsupported_media_type(self):
     #     """It should not Create when sending wrong media type"""
-    #     account = AccountFactory()
+    #     order = OrderFactory()
     #     resp = self.client.post(
-    #         BASE_URL, json=account.serialize(), content_type="test/html"
+    #         BASE_URL, json=order.serialize(), content_type="test/html"
     #     )
     #     self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
@@ -298,42 +298,42 @@ class TestOrderService(TestCase):
 
     def test_get_item_list(self):
         """It should Get a list of Items"""
-        # add two addresses to account
+        # add two items to order
         order = self._create_orders(1)[0]
         item_list = ItemFactory.create_batch(2)
 
     #     # Create address 1
     #     resp = self.client.post(
-    #         f"{BASE_URL}/{account.id}/addresses", json=address_list[0].serialize()
+    #         f"{BASE_URL}/{order.id}/items", json=address_list[0].serialize()
     #     )
     #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
     #     # Create address 2
     #     resp = self.client.post(
-    #         f"{BASE_URL}/{account.id}/addresses", json=address_list[1].serialize()
+    #         f"{BASE_URL}/{order.id}/items", json=address_list[1].serialize()
     #     )
     #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
     #     # get the list back and make sure there are 2
-    #     resp = self.client.get(f"{BASE_URL}/{account.id}/addresses")
+    #     resp = self.client.get(f"{BASE_URL}/{order.id}/items")
     #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
     #     data = resp.get_json()
     #     self.assertEqual(len(data), 2)
 
     # def test_add_address(self):
-    #     """It should Add an address to an account"""
-    #     account = self._create_accounts(1)[0]
+    #     """It should Add an address to an order"""
+    #     order = self._create_orders(1)[0]
     #     address = AddressFactory()
     #     resp = self.client.post(
-    #         f"{BASE_URL}/{account.id}/addresses",
+    #         f"{BASE_URL}/{order.id}/items",
     #         json=address.serialize(),
     #         content_type="application/json",
     #     )
     #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
     #     data = resp.get_json()
     #     logging.debug(data)
-    #     self.assertEqual(data["account_id"], account.id)
+    #     self.assertEqual(data["order_id"], order.id)
     #     self.assertEqual(data["name"], address.name)
     #     self.assertEqual(data["street"], address.street)
     #     self.assertEqual(data["city"], address.city)
@@ -341,12 +341,12 @@ class TestOrderService(TestCase):
     #     self.assertEqual(data["postal_code"], address.postal_code)
 
     # def test_get_address(self):
-    #     """It should Get an address from an account"""
+    #     """It should Get an address from an order"""
     #     # create a known address
-    #     account = self._create_accounts(1)[0]
+    #     order = self._create_orders(1)[0]
     #     address = AddressFactory()
     #     resp = self.client.post(
-    #         f"{BASE_URL}/{account.id}/addresses",
+    #         f"{BASE_URL}/{order.id}/items",
     #         json=address.serialize(),
     #         content_type="application/json",
     #     )
@@ -358,14 +358,14 @@ class TestOrderService(TestCase):
 
     #     # retrieve it back
     #     resp = self.client.get(
-    #         f"{BASE_URL}/{account.id}/addresses/{address_id}",
+    #         f"{BASE_URL}/{order.id}/items/{address_id}",
     #         content_type="application/json",
     #     )
     #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
     #     data = resp.get_json()
     #     logging.debug(data)
-    #     self.assertEqual(data["account_id"], account.id)
+    #     self.assertEqual(data["order_id"], order.id)
     #     self.assertEqual(data["name"], address.name)
     #     self.assertEqual(data["street"], address.street)
     #     self.assertEqual(data["city"], address.city)
@@ -373,12 +373,12 @@ class TestOrderService(TestCase):
     #     self.assertEqual(data["postal_code"], address.postal_code)
 
     # def test_update_address(self):
-    #     """It should Update an address on an account"""
+    #     """It should Update an address on an order"""
     #     # create a known address
-    #     account = self._create_accounts(1)[0]
+    #     order = self._create_orders(1)[0]
     #     address = AddressFactory()
     #     resp = self.client.post(
-    #         f"{BASE_URL}/{account.id}/addresses",
+    #         f"{BASE_URL}/{order.id}/items",
     #         json=address.serialize(),
     #         content_type="application/json",
     #     )
@@ -391,7 +391,7 @@ class TestOrderService(TestCase):
 
     #     # send the update back
     #     resp = self.client.put(
-    #         f"{BASE_URL}/{account.id}/addresses/{address_id}",
+    #         f"{BASE_URL}/{order.id}/items/{address_id}",
     #         json=data,
     #         content_type="application/json",
     #     )
@@ -399,7 +399,7 @@ class TestOrderService(TestCase):
 
     #     # retrieve it back
     #     resp = self.client.get(
-    #         f"{BASE_URL}/{account.id}/addresses/{address_id}",
+    #         f"{BASE_URL}/{order.id}/items/{address_id}",
     #         content_type="application/json",
     #     )
     #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
@@ -407,7 +407,7 @@ class TestOrderService(TestCase):
     #     data = resp.get_json()
     #     logging.debug(data)
     #     self.assertEqual(data["id"], address_id)
-    #     self.assertEqual(data["account_id"], account.id)
+    #     self.assertEqual(data["order_id"], order.id)
     #     self.assertEqual(data["name"], "XXXX")
 
     def test_delete_item(self):
@@ -426,14 +426,36 @@ class TestOrderService(TestCase):
 
         # send delete request
         resp = self.client.delete(
-            f"{BASE_URL}/{order.id}/addresses/{item_id}",
+            f"{BASE_URL}/{order.id}/items/{item_id}",
             content_type="application/json",
         )
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
 
         # retrieve it back and make sure item is not there
         resp = self.client.get(
-            f"{BASE_URL}/{order.id}/addresses/{item_id}",
+            f"{BASE_URL}/{order.id}/items/{item_id}",
             content_type="application/json",
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    ######################################################################
+    #  TESTS FOR list ORDER
+    ######################################################################
+    
+    def test_get_order_list(self):
+        """It should Get a list of Orders"""
+        self._create_orders(5)
+        resp = self.client.get(BASE_URL)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), 5)
+
+    ######################################################################
+    #  A D D R E S S   T E S T   C A S E S (list)
+    ######################################################################
+
+    def test_get_address_list(self):
+        """It should Get a list of Items"""
+        # add two items to order
+        order = self._create_orders(1)[0]
+        address_list = AddressFactory.create_batch(2)

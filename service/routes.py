@@ -77,7 +77,7 @@ def get_orders(order_id):
 
 
 ######################################################################
-# LIST ALL ORDERS
+# LIST ALL ACCOUNTS
 ######################################################################
 @app.route("/orders", methods=["GET"])
 def list_orders():
@@ -122,7 +122,7 @@ def update_orders(order_id):
     order.id = order_id
     order.update()
 
-    return make_response(jsonify(account.serialize()), status.HTTP_200_OK)
+    return make_response(jsonify(order.serialize()), status.HTTP_200_OK)
 
 
 
@@ -131,7 +131,7 @@ def update_orders(order_id):
 @app.route("/orders/<int:order_id>", methods=["DELETE"])
 def delete_orders(order_id):
     """
-    Delete an Account
+    Delete an Order
     This endpoint will delete an order based the id specified in the path
     """
     app.logger.info("Request to delete an order with id: %s", order_id)
@@ -197,7 +197,7 @@ def list_items(order_id):
             f"Order with id '{order_id}' could not be found.",
         )
 
-    # Get the items for the account
+    # Get the items for the order
     results = [item.serialize() for item in order.items]
 
     return make_response(jsonify(results), status.HTTP_200_OK)
@@ -225,7 +225,7 @@ def get_items(order_id, item_id):
             f"Order with id '{order_id}' could not be found.",
         )
 
-    return make_response(jsonify(address.serialize()), status.HTTP_200_OK)
+    return make_response(jsonify(items.serialize()), status.HTTP_200_OK)
 
 
 ######################################################################
@@ -255,7 +255,7 @@ def update_items(order_id, item_id):
     item.id = item_id
     item.update()
 
-    return make_response(jsonify(address.serialize()), status.HTTP_200_OK)
+    return make_response(jsonify(items.serialize()), status.HTTP_200_OK)
 
 
 
