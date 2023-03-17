@@ -97,6 +97,47 @@ class TestOrderService(TestCase):
         orders = Order.all()
         self.assertEqual(len(orders), 0)
 
+    def test_index(self):
+         """It should call the Home Page"""
+         resp = self.client.get("/")
+         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+    def test_method_not_allowed(self):
+         """It should not allow an illegal method call"""
+         resp = self.client.put(BASE_URL, json={"not": "today"})
+         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    
+    ######################################################################
+    #  TESTS FOR UPDATE ORDER
+    ######################################################################
+    
+    def test_update_order(self):
+        """It should Update an existing Order"""
+        # create an Order to update
+        test_order = OrderFactory()
+        resp = self.client.post(BASE_URL, json=test_order.serialize())
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        # update the pet
+        new_order = resp.get_json()
+        new_order["name"] = "Happy-Happy Joy-Joy"
+        new_order_id = new_order["id"]
+        resp = self.client.put(f"{BASE_URL}/{new_order_id}", json=new_order)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        updated_order = resp.get_json()
+        self.assertEqual(updated_order["name"], "Happy-Happy Joy-Joy")
+    
+    def test_update_nonexistant_order(self):
+        """It should not Update an Order that is not found"""
+        test_order = OrderFactory()
+        resp = self.client.post(BASE_URL, json=test_order.serialize())
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        
+        new_order = resp.get_json()
+        new_order_id = "1234"
+        resp = self.client.put(f"{BASE_URL}/{new_order_id}", json=new_order)
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
     ######################################################################
     #  H E L P E R   M E T H O D S
@@ -117,16 +158,6 @@ class TestOrderService(TestCase):
             order.id = new_order["id"]
             orders.append(order)
         return orders
-    
-    def test_index(self):
-         """It should call the Home Page"""
-         resp = self.client.get("/")
-         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-    def test_method_not_allowed(self):
-         """It should not allow an illegal method call"""
-         resp = self.client.put(BASE_URL, json={"not": "today"})
-         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     ######################################################################
     #  S A M P L E    O R D E R S  T E S T   C A S E S
