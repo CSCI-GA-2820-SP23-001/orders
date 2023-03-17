@@ -98,13 +98,13 @@ def list_orders():
     return make_response(jsonify(results), status.HTTP_200_OK)
 
 ######################################################################
-# UPDATE AN EXISTING ORDER
+# UPDATE AN EXISTING order
 ######################################################################
-
 @app.route("/orders/<int:order_id>", methods=["PUT"])
 def update_orders(order_id):
     """
     Update an Order
+
     This endpoint will update an Order based the body that is posted
     """
     app.logger.info("Request to update order with id: %s", order_id)

@@ -459,3 +459,43 @@ class TestOrderService(TestCase):
         # add two items to order
         order = self._create_orders(1)[0]
         item_list = ItemFactory.create_batch(2)
+
+    def test_update_item(self):
+        """It should Update an item on an item"""
+        # create a known item
+        item = self._create_items(1)[0]
+        item = ItemFactory()
+        resp = self.client.post(
+            f"{BASE_URL}/{item.id}/itemes",
+            json=item.serialize(),
+            content_type="application/json",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        data = resp.get_json()
+        logging.debug(data)
+        item_id = data["id"]
+        data["name"] = "XXXX"
+
+        # send the update back
+        resp = self.client.put(
+            f"{BASE_URL}/{item.id}/itemes/{item_id}",
+            json=data,
+            content_type="application/json",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        # retrieve it back
+        resp = self.client.get(
+            f"{BASE_URL}/{item.id}/itemes/{item_id}",
+            content_type="application/json",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        data = resp.get_json()
+        logging.debug(data)
+        self.assertEqual(data["id"], item_id)
+        self.assertEqual(data["item_id"], item.id)
+        self.assertEqual(data["name"], "XXXX")
+
+ 
