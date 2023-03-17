@@ -55,7 +55,7 @@ def create_order():
     )
 
 
-# RETRIEVE AN ACCOUNT
+# RETRIEVE/READ AN ORDER
 
 @app.route("/orders/<int:order_id>", methods=["GET"])
 def get_orders(order_id):
@@ -76,8 +76,30 @@ def get_orders(order_id):
     return make_response(jsonify(order.serialize()), status.HTTP_200_OK)
 
 
+######################################################################
+# LIST ALL ORDERS
+######################################################################
+@app.route("/orders", methods=["GET"])
+def list_orders():
+    """Returns all of the Orders"""
+    app.logger.info("Request for Order list")
+    orders = []
 
-# UPDATE AN EXISTING ACCOUNT
+    # Process the query string if any
+    name = request.args.get("name")
+    if name:
+        orders = Order.find_by_name(name)
+    else:
+        orders = Order.all()
+
+    # Return as an array of dictionaries
+    results = [order.serialize() for order in orders]
+
+    return make_response(jsonify(results), status.HTTP_200_OK)
+
+######################################################################
+# UPDATE AN EXISTING ORDER
+######################################################################
 
 @app.route("/orders/<int:order_id>", methods=["PUT"])
 def update_orders(order_id):
@@ -127,7 +149,7 @@ def delete_orders(order_id):
 # ---------------------------------------------------------------------
 
 
-# CREATE/ADD AN ADDRESS TO AN ACCOUNT
+# CREATE/ADD AN ITEM TO AN ACCOUNT
 
 @app.route("/orders/<int:order_id>/items", methods=["POST"])
 def create_items(order_id):
@@ -160,10 +182,10 @@ def create_items(order_id):
     return make_response(jsonify(message), status.HTTP_201_CREATED)
 
 
-# LIST ITEMS
+# LIST ORDER ITEMS
 
 @app.route("/orders/<int:order_id>/items", methods=["GET"])
-def list_items(account_id):
+def list_items(order_id):
     """Returns all of the Items for an Order"""
     app.logger.info("Request for all Items for an Order with id: %s", order_id)
 
@@ -184,6 +206,7 @@ def list_items(account_id):
 ######################################################################
 # RETRIEVE AN ITEM FROM ORDER
 ######################################################################
+
 @app.route("/orders/<int:order_id>/items/<int:item_id>", methods=["GET"])
 def get_items(order_id, item_id):
     """
@@ -206,7 +229,7 @@ def get_items(order_id, item_id):
 
 
 ######################################################################
-# UPDATE AN ITEM
+# UPDATE AN ORDER ITEM
 ######################################################################
 @app.route("/orders/<int:order_id>/items/<int:item_id>", methods=["PUT"])
 def update_items(order_id, item_id):
@@ -256,35 +279,6 @@ def delete_items(order_id, item_id):
 
     return make_response("", status.HTTP_204_NO_CONTENT)
 
-
-
-
-######################################################################
-# UPDATE AN EXISTING ORDER
-######################################################################
-
-@app.route("/orders/<int:order_id>", methods=["PUT"])
-def update_orders(order_id):
-    """
-    Update an Order
-    This endpoint will update an Order based the body that is posted
-    """
-    app.logger.info("Request to update order with id: %s", order_id)
-    check_content_type("application/json")
-
-    # See if the account exists and abort if it doesn't
-    order = Order.find(order_id)
-    if not order:
-        abort(
-            status.HTTP_404_NOT_FOUND, f"Order with id '{order_id}' was not found."
-        )
-
-    # Update from the json in the body of the request
-    order.deserialize(request.get_json())
-    order.id = order_id
-    order.update()
-
-    return make_response(jsonify(order.serialize()), status.HTTP_200_OK)
 
 
 ######################################################################
