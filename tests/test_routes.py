@@ -129,57 +129,60 @@ class TestOrderService(TestCase):
          self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     ######################################################################
-    #  S A M P L E    A C C O U N T   T E S T   C A S E S
+    #  S A M P L E    O R D E R S  T E S T   C A S E S
     ######################################################################
 
-    # def test_index(self):
-    #     """It should call the Home Page"""
-    #     resp = self.client.get("/")
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
+   
+    
+    
+     def test_index(self):
+         """It should call the Home Page"""
+         resp = self.client.get("/")
+         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
-    # def test_get_account_list(self):
-    #     """It should Get a list of Accounts"""
-    #     self._create_accounts(5)
-    #     resp = self.client.get(BASE_URL)
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     data = resp.get_json()
-    #     self.assertEqual(len(data), 5)
+     def test_get_order_list(self):
+         """It should Get a list of Orders"""
+         self._create_orders(5)
+         resp = self.client.get(BASE_URL)
+         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+         data = resp.get_json()
+         self.assertEqual(len(data), 5)
 
-    # def test_get_account_by_name(self):
-    #     """It should Get an Account by Name"""
-    #     accounts = self._create_accounts(3)
-    #     resp = self.client.get(BASE_URL, query_string=f"name={accounts[1].name}")
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     data = resp.get_json()
-    #     self.assertEqual(data[0]["name"], accounts[1].name)
+     def test_get_order_by_name(self):
+         """It should Get an Account by Name"""
+         orders = self._create_orders(3)
+         resp = self.client.get(BASE_URL, query_string=f"name={orders[1].name}")
+         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+         data = resp.get_json()
+         self.assertEqual(data[0]["name"], orders[1].name)
 
-    # def test_get_account(self):
-    #     """It should Read a single Account"""
-    #     # get the id of an account
-    #     account = self._create_accounts(1)[0]
-    #     resp = self.client.get(
-    #         f"{BASE_URL}/{account.id}", content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     data = resp.get_json()
-    #     self.assertEqual(data["name"], account.name)
+     def test_get_order(self):
+         """It should Read a single Order"""
+         # get the id of an order
+         order = self._create_orders(1)[0]
+         resp = self.client.get(
+             f"{BASE_URL}/{order.id}", content_type="application/json"
+         )
+         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+         data = resp.get_json()
+         self.assertEqual(data["name"], order.name)
 
-    # def test_get_account_not_found(self):
-    #     """It should not Read an Account that is not found"""
-    #     resp = self.client.get(f"{BASE_URL}/0")
-    #     self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+     def test_get_order_not_found(self):
+         """It should not Read an Order that is not found"""
+         resp = self.client.get(f"{BASE_URL}/0")
+         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
-    # def test_create_account(self):
-    #     """It should Create a new Account"""
-    #     account = AccountFactory()
-    #     resp = self.client.post(
-    #         BASE_URL, json=account.serialize(), content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+     def test_create_order(self):
+         """It should Create a new Order"""
+         order = AccountFactory()
+         resp = self.client.post(
+             BASE_URL, json=account.serialize(), content_type="application/json"
+         )
+         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
-    #     # Make sure location header is set
-    #     location = resp.headers.get("Location", None)
-    #     self.assertIsNotNone(location)
+         # Make sure location header is set
+         location = resp.headers.get("Location", None)
+         self.assertIsNotNone(location)
 
     #     # Check the data is correct
     #     new_account = resp.get_json()
@@ -215,12 +218,12 @@ class TestOrderService(TestCase):
     #         "Date Joined does not match",
     #     )
 
-    # def test_update_account(self):
-    #     """It should Update an existing Account"""
-    #     # create an Account to update
-    #     test_account = AccountFactory()
-    #     resp = self.client.post(BASE_URL, json=test_account.serialize())
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+     def test_update_account(self):
+         """It should Update an existing Account"""
+         # create an Order to update
+         test_order = AccountFactory()
+         resp = self.client.post(BASE_URL, json=test_account.serialize())
+         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
     #     # update the pet
     #     new_account = resp.get_json()
@@ -231,17 +234,19 @@ class TestOrderService(TestCase):
     #     updated_account = resp.get_json()
     #     self.assertEqual(updated_account["name"], "Happy-Happy Joy-Joy")
 
-    # def test_delete_account(self):
-    #     """It should Delete an Account"""
-    #     # get the id of an account
-    #     account = self._create_accounts(1)[0]
-    #     resp = self.client.delete(f"{BASE_URL}/{account.id}")
-    #     self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
 
-    # def test_bad_request(self):
-    #     """It should not Create when sending the wrong data"""
-    #     resp = self.client.post(BASE_URL, json={"name": "not enough data"})
-    #     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+    #Test Delete order
+    def test_delete_oreder(self):
+         """It should Delete an Order"""
+         # get the id of an order
+         order = self._create_orders(1)[0]
+         resp = self.client.delete(f"{BASE_URL}/{order.id}")
+         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+
+     def test_bad_request(self):
+         """It should not Create when sending the wrong data"""
+         resp = self.client.post(BASE_URL, json={"name": "not enough data"})
+         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
     # def test_unsupported_media_type(self):
     #     """It should not Create when sending wrong media type"""
@@ -251,20 +256,20 @@ class TestOrderService(TestCase):
     #     )
     #     self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
-    # def test_method_not_allowed(self):
-    #     """It should not allow an illegal method call"""
-    #     resp = self.client.put(BASE_URL, json={"not": "today"})
-    #     self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+     def test_method_not_allowed(self):
+         """It should not allow an illegal method call"""
+         resp = self.client.put(BASE_URL, json={"not": "today"})
+         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     # ######################################################################
-    # #  A D D R E S S   T E S T   C A S E S
+    # #  I T E M S  T E S T   C A S E S
     # ######################################################################
 
-    # def test_get_address_list(self):
-    #     """It should Get a list of Addresses"""
-    #     # add two addresses to account
-    #     account = self._create_accounts(1)[0]
-    #     address_list = AddressFactory.create_batch(2)
+     def test_get_item_list(self):
+         """It should Get a list of Items"""
+         # add two addresses to account
+         order = self._create_orders(1)[0]
+         item_list = ItemFactory.create_batch(2)
 
     #     # Create address 1
     #     resp = self.client.post(
@@ -374,30 +379,30 @@ class TestOrderService(TestCase):
     #     self.assertEqual(data["account_id"], account.id)
     #     self.assertEqual(data["name"], "XXXX")
 
-    # def test_delete_address(self):
-    #     """It should Delete an Address"""
-    #     account = self._create_accounts(1)[0]
-    #     address = AddressFactory()
-    #     resp = self.client.post(
-    #         f"{BASE_URL}/{account.id}/addresses",
-    #         json=address.serialize(),
-    #         content_type="application/json",
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-    #     data = resp.get_json()
-    #     logging.debug(data)
-    #     address_id = data["id"]
+    def test_delete_item(self):
+         """It should Delete an Item"""
+         order = self._create_orders(1)[0]
+         item = ItemFactory()
+         resp = self.client.post(
+             f"{BASE_URL}/{order.id}/items",
+             json=item.serialize(),
+             content_type="application/json",
+         )
+         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+         data = resp.get_json()
+         logging.debug(data)
+         item_id = data["id"]
 
-    #     # send delete request
-    #     resp = self.client.delete(
-    #         f"{BASE_URL}/{account.id}/addresses/{address_id}",
-    #         content_type="application/json",
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+         # send delete request
+         resp = self.client.delete(
+             f"{BASE_URL}/{order.id}/addresses/{item_id}",
+             content_type="application/json",
+         )
+         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
 
-    #     # retrieve it back and make sure address is not there
-    #     resp = self.client.get(
-    #         f"{BASE_URL}/{account.id}/addresses/{address_id}",
+         # retrieve it back and make sure item is not there
+         resp = self.client.get(
+             f"{BASE_URL}/{order.id}/addresses/{item_id}",
     #         content_type="application/json",
     #     )
     #     self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
