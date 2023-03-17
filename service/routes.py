@@ -49,6 +49,54 @@ def create_order():
         jsonify(message), status.HTTP_201_CREATED, {"Location": "TODO"}
     )
 
+
+
+# DELETE AN ORDER
+
+@app.route("/orders/<int:order_id>", methods=["DELETE"])
+def delete_orders(order_id):
+    """
+    Delete an Account
+    This endpoint will delete an order based the id specified in the path
+    """
+    app.logger.info("Request to delete an order with id: %s", order_id)
+
+    # Retrieve the order to delete and delete it if it exists
+    order = Order.find(order_id)
+    if order:
+        order.delete()
+
+    return make_response("", status.HTTP_204_NO_CONTENT)
+
+
+# ---------------------------------------------------------------------
+#                ITEMS   M E T H O D S
+# ---------------------------------------------------------------------
+
+
+######################################################################
+# DELETE AN ORDER ITEM
+######################################################################
+@app.route("/orders/<int:order_id>/items/<int:item_id>", methods=["DELETE"])
+def delete_items(order_id, item_id):
+    """
+    Delete an Order Item
+    This endpoint will delete an item based the id specified in the path
+    """
+    app.logger.info(
+        "Request to delete item %s for order id: %s", (order_id, item_id)
+    )
+
+    # See if the item exists and delete it if it does
+    item = Item.find(item_id)
+    if item:
+        item.delete()
+
+    return make_response("", status.HTTP_204_NO_CONTENT)
+
+
+
+
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
