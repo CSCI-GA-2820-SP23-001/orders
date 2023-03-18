@@ -122,7 +122,7 @@ def update_orders(order_id):
     order.id = order_id
     order.update()
 
-    return make_response(jsonify(account.serialize()), status.HTTP_200_OK)
+    return make_response(jsonify(order.serialize()), status.HTTP_200_OK)
 
 
 
