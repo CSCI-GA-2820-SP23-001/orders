@@ -149,7 +149,7 @@ def delete_orders(order_id):
 # ---------------------------------------------------------------------
 
 
-# CREATE/ADD AN ITEM TO AN ACCOUNT
+# CREATE/ADD AN ITEM TO AN ORDER
 
 @app.route("/orders/<int:order_id>/items", methods=["POST"])
 def create_items(order_id):
