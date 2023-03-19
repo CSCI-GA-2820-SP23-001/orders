@@ -161,6 +161,17 @@ class TestOrderService(TestCase):
         resp = self.client.delete(f"{BASE_URL}/{order.id}")
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
 
+    def test_delete_nonexistant_order(self):
+        """It should not Delete an Order that is not found"""
+        test_order = OrderFactory()
+        resp = self.client.post(BASE_URL, json=test_order.serialize())
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        
+        new_order2 = resp.get_json()
+        new_order2_id = "1234"
+        resp = self.client.delete(f"{BASE_URL}/{new_order2_id}")
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+
 
     ######################################################################
     #  TESTS FOR LIST ORDERS
