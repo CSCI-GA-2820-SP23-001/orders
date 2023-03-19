@@ -107,6 +107,27 @@ class TestOrderService(TestCase):
          resp = self.client.put(BASE_URL, json={"not": "today"})
          self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
+    ######################################################################
+    #  TESTS FOR READ ORDER
+    ######################################################################
+
+
+    def test_get_order(self):
+        """It should Read a single Order"""
+        # get the id of an order
+        order = self._create_orders(1)[0]
+        resp = self.client.get(
+            f"{BASE_URL}/{order.id}", content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data["name"], order.name)
+
+    def test_get_order_not_found(self):
+        """It should not Read an Account that is not found"""
+        resp = self.client.get(f"{BASE_URL}/0")
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
     
     ######################################################################
     #  TESTS FOR UPDATE ORDER
@@ -143,16 +164,16 @@ class TestOrderService(TestCase):
     #  H E L P E R   M E T H O D S
     ######################################################################
 
-    def _create_bulk_orders(self, count):
+    def _create_orders(self, count):
         """Factory method to create orders in bulk"""
         orders = []
-        for orders in range(count):
+        for _ in range(count):
             order = OrderFactory()
-            resp = self.client.post(BASE_URL, json=orders.serialize())
+            resp = self.client.post(BASE_URL, json=order.serialize())
             self.assertEqual(
                 resp.status_code,
                 status.HTTP_201_CREATED,
-                "Could not create test Account",
+                "Could not create test Order",
             )
             new_order = resp.get_json()
             order.id = new_order["id"]
@@ -184,21 +205,7 @@ class TestOrderService(TestCase):
     #     data = resp.get_json()
     #     self.assertEqual(data[0]["name"], accounts[1].name)
 
-    # def test_get_account(self):
-    #     """It should Read a single Account"""
-    #     # get the id of an account
-    #     account = self._create_accounts(1)[0]
-    #     resp = self.client.get(
-    #         f"{BASE_URL}/{account.id}", content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     data = resp.get_json()
-    #     self.assertEqual(data["name"], account.name)
 
-    # def test_get_account_not_found(self):
-    #     """It should not Read an Account that is not found"""
-    #     resp = self.client.get(f"{BASE_URL}/0")
-    #     self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
     # def test_create_account(self):
     #     """It should Create a new Account"""
