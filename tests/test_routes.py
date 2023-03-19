@@ -143,12 +143,13 @@ class TestOrderService(TestCase):
     #  H E L P E R   M E T H O D S
     ######################################################################
 
-    def _create_bulk_orders(self, count):
+
+    def _create_orders(self, count):
         """Factory method to create orders in bulk"""
         orders = []
-        for orders in range(count):
+        for _ in range(count):
             order = OrderFactory()
-            resp = self.client.post(BASE_URL, json=orders.serialize())
+            resp = self.client.post(BASE_URL, json=order.serialize())
             self.assertEqual(
                 resp.status_code,
                 status.HTTP_201_CREATED,
@@ -158,6 +159,27 @@ class TestOrderService(TestCase):
             order.id = new_order["id"]
             orders.append(order)
         return orders
+
+    ######################################################################
+    #  I T E M  M E T H O D S
+    ######################################################################    
+
+    def test_add_item(self):
+        """It should Add an item to an order"""
+        order = self._create_orders(1)[0]
+        item = ItemFactory()
+        resp = self.client.post(
+            f"{BASE_URL}/{order.id}/items",
+            json=item.serialize(),
+            content_type="application/json",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        data = resp.get_json()
+        logging.debug(data)
+        self.assertEqual(data["order_id"], order.id)
+        self.assertEqual(data["item_price"], item.item_price)
+        self.assertEqual(data["sku"], item.sku)
+
 
     ######################################################################
     #  S A M P L E    A C C O U N T   T E S T   C A S E S
@@ -316,24 +338,7 @@ class TestOrderService(TestCase):
     #     data = resp.get_json()
     #     self.assertEqual(len(data), 2)
 
-    # def test_add_address(self):
-    #     """It should Add an address to an account"""
-    #     account = self._create_accounts(1)[0]
-    #     address = AddressFactory()
-    #     resp = self.client.post(
-    #         f"{BASE_URL}/{account.id}/addresses",
-    #         json=address.serialize(),
-    #         content_type="application/json",
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-    #     data = resp.get_json()
-    #     logging.debug(data)
-    #     self.assertEqual(data["account_id"], account.id)
-    #     self.assertEqual(data["name"], address.name)
-    #     self.assertEqual(data["street"], address.street)
-    #     self.assertEqual(data["city"], address.city)
-    #     self.assertEqual(data["state"], address.state)
-    #     self.assertEqual(data["postal_code"], address.postal_code)
+
 
     # def test_get_address(self):
     #     """It should Get an address from an account"""
