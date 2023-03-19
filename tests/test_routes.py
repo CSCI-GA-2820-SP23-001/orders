@@ -149,9 +149,9 @@ class TestOrderService(TestCase):
         resp = self.client.put(f"{BASE_URL}/{new_order_id}", json=new_order)
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
-    
+
     ######################################################################
-    #  TESTS FOR UPDATE ORDER
+    #  TESTS FOR DELETE ORDER
     ######################################################################
 
     def test_delete_order(self):
@@ -160,15 +160,6 @@ class TestOrderService(TestCase):
         order = self._create_orders(1)[0]
         resp = self.client.delete(f"{BASE_URL}/{order.id}")
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
-
-    ######################################################################
-    #  TESTS FOR DELETE ORDER
-    ######################################################################
-
-    ######################################################################
-    # /\/\/\/   TESTS FOR DELETE ORDER GO HERE
-    ######################################################################
-
 
 
     ######################################################################
