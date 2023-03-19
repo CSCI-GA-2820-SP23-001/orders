@@ -124,14 +124,14 @@ def update_orders(order_id):
 
     return make_response(jsonify(order.serialize()), status.HTTP_200_OK)
 
-
-
-# DELETE AN ORDER
+######################################################################
+# DELETE AN EXISTING ORDER
+######################################################################
 
 @app.route("/orders/<int:order_id>", methods=["DELETE"])
 def delete_orders(order_id):
     """
-    Delete an Account
+    Delete an Order
     This endpoint will delete an order based the id specified in the path
     """
     app.logger.info("Request to delete an order with id: %s", order_id)
