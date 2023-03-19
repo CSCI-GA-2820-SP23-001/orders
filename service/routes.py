@@ -6,7 +6,7 @@ Describe what your service does here
 
 from flask import Flask, jsonify, request, url_for, make_response, abort
 from service.common import status  # HTTP Status Codes
-from service.models import Order
+from service.models import Order, Item
 
 # Import Flask application
 from . import app
@@ -169,7 +169,7 @@ def create_items(order_id):
         )
 
     # Create an item from the json data
-    iem = Item()
+    item = Item()
     item.deserialize(request.get_json())
 
     # Append the item to the order
@@ -225,7 +225,7 @@ def get_items(order_id, item_id):
             f"Order with id '{order_id}' could not be found.",
         )
 
-    return make_response(jsonify(address.serialize()), status.HTTP_200_OK)
+    return make_response(jsonify(item.serialize()), status.HTTP_200_OK)
 
 
 ######################################################################
@@ -255,7 +255,7 @@ def update_items(order_id, item_id):
     item.id = item_id
     item.update()
 
-    return make_response(jsonify(address.serialize()), status.HTTP_200_OK)
+    return make_response(jsonify(item.serialize()), status.HTTP_200_OK)
 
 
 

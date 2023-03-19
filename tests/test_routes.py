@@ -22,6 +22,7 @@ BASE_URL = "/orders"
 ######################################################################
 #  T E S T   C A S E S
 ######################################################################
+
 class TestOrderService(TestCase):
     """Order Service Tests"""
 
@@ -52,6 +53,7 @@ class TestOrderService(TestCase):
     ######################################################################
     #  TESTS FOR CREATE ORDER
     ######################################################################
+
     def test_create_order_simple(self):
         """
         Creating an order through the API creates 
@@ -97,20 +99,9 @@ class TestOrderService(TestCase):
         orders = Order.all()
         self.assertEqual(len(orders), 0)
 
-    def test_index(self):
-         """It should call the Home Page"""
-         resp = self.client.get("/")
-         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-    def test_method_not_allowed(self):
-         """It should not allow an illegal method call"""
-         resp = self.client.put(BASE_URL, json={"not": "today"})
-         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-
     ######################################################################
     #  TESTS FOR READ ORDER
     ######################################################################
-
 
     def test_get_order(self):
         """It should Read a single Order"""
@@ -124,10 +115,9 @@ class TestOrderService(TestCase):
         self.assertEqual(data["name"], order.name)
 
     def test_get_order_not_found(self):
-        """It should not Read an Account that is not found"""
+        """It should not Read an Order that is not found"""
         resp = self.client.get(f"{BASE_URL}/0")
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
-
     
     ######################################################################
     #  TESTS FOR UPDATE ORDER
@@ -159,6 +149,103 @@ class TestOrderService(TestCase):
         new_order_id = "1234"
         resp = self.client.put(f"{BASE_URL}/{new_order_id}", json=new_order)
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    ######################################################################
+    #  TESTS FOR DELETE ORDER
+    ######################################################################
+
+    ######################################################################
+    # /\/\/\/   TESTS FOR DELETE ORDER GO HERE
+    ######################################################################
+
+
+
+    ######################################################################
+    #  TESTS FOR LIST ORDERS
+    ######################################################################
+
+    ######################################################################
+    # /\/\/\/   TESTS FOR LIST ORDERS GO HERE
+    ######################################################################
+
+
+
+    ######################################################################
+    #  TESTS FOR CREATE ITEM
+    ######################################################################
+
+    ######################################################################
+    # /\/\/\/   TESTS FOR CREATE ITEM GO HERE
+    ######################################################################
+
+
+
+    ######################################################################
+    #  TESTS FOR READ ITEM
+    ######################################################################
+
+    ######################################################################
+    # /\/\/\/   TESTS FOR READ ITEM GO HERE
+    ######################################################################
+
+
+
+    ######################################################################
+    #  TESTS FOR UPDATE ITEM
+    ######################################################################
+
+    ######################################################################
+    # /\/\/\/   TESTS FOR UPDATE ITEM GO HERE
+    ######################################################################
+
+
+
+    ######################################################################
+    #  TESTS FOR DELETE ITEM
+    ######################################################################
+
+    ######################################################################
+    # /\/\/\/   TESTS FOR DELETE ITEM GO HERE
+    ######################################################################
+
+
+
+    ######################################################################
+    #  TESTS FOR LIST ITEMS
+    ######################################################################
+
+    ######################################################################
+    # /\/\/\/   TESTS FOR LIST ITEMS GO HERE
+    ######################################################################
+    
+
+
+    ######################################################################
+    #  M I S C  T E S T S
+    ######################################################################
+
+    def test_bad_request(self):
+        """It should not Create when sending the wrong data"""
+        resp = self.client.post(BASE_URL, json={"name": "not enough data"})
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_unsupported_media_type(self):
+        """It should not Create when sending wrong media type"""
+        order = OrderFactory()
+        resp = self.client.post(
+            BASE_URL, json=order.serialize(), content_type="test/html"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    def test_index(self):
+         """It should call the Home Page"""
+         resp = self.client.get("/")
+         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+    def test_method_not_allowed(self):
+         """It should not allow an illegal method call"""
+         resp = self.client.put(BASE_URL, json={"not": "today"})
+         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     ######################################################################
     #  H E L P E R   M E T H O D S
@@ -276,23 +363,7 @@ class TestOrderService(TestCase):
     #     resp = self.client.delete(f"{BASE_URL}/{account.id}")
     #     self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
 
-    # def test_bad_request(self):
-    #     """It should not Create when sending the wrong data"""
-    #     resp = self.client.post(BASE_URL, json={"name": "not enough data"})
-    #     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
-    # def test_unsupported_media_type(self):
-    #     """It should not Create when sending wrong media type"""
-    #     account = AccountFactory()
-    #     resp = self.client.post(
-    #         BASE_URL, json=account.serialize(), content_type="test/html"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
-
-    # def test_method_not_allowed(self):
-    #     """It should not allow an illegal method call"""
-    #     resp = self.client.put(BASE_URL, json={"not": "today"})
-    #     self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     # ######################################################################
     # #  A D D R E S S   T E S T   C A S E S
