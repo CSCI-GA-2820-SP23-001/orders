@@ -56,7 +56,7 @@ class TestOrderService(TestCase):
 
     def test_create_order_simple(self):
         """
-        Creating an order through the API creates an order in the database.
+        It should create an order in the database.
         """
         order = OrderFactory()
         resp = self.client.post(
@@ -78,7 +78,7 @@ class TestOrderService(TestCase):
         
     def test_create_order_missing_info(self):
         """
-        Creating an order should fail if it has some missing information.
+        It should fail if the call has some missing information.
         """
         resp = self.client.post(
             "/orders", 
@@ -161,17 +161,58 @@ class TestOrderService(TestCase):
         resp = self.client.delete(f"{BASE_URL}/{order.id}")
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
 
+    def test_delete_nonexistant_order(self):
+        """It should not Delete an Order that is not found"""
+        test_order = OrderFactory()
+        resp = self.client.post(BASE_URL, json=test_order.serialize())
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        
+        new_order2 = resp.get_json()
+        new_order2_id = "1234"
+        resp = self.client.delete(f"{BASE_URL}/{new_order2_id}")
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+
 
     ######################################################################
     #  TESTS FOR LIST ORDERS
     ######################################################################
 
-    ######################################################################
-    # /\/\/\/   TESTS FOR LIST ORDERS GO HERE
-    ######################################################################
+    def test_get_order_list(self):
+        """It should Get a list of Orders"""
+        self._create_orders(5)
+        resp = self.client.get(BASE_URL)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), 5)
 
+    def test_get_order_by_name(self):
+        """It should Get an Order by Name"""
+        orders = self._create_orders(3)
+        resp = self.client.get(BASE_URL, query_string=f"name={orders[1].name}")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data[0]["name"], orders[1].name)
 
-
+    def test_list_nonexistant_order(self):
+        """It should not List an Order that is not found"""
+        test_order = OrderFactory()
+        resp = self.client.post(BASE_URL, json=test_order.serialize())
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        
+        new_order3 = resp.get_json()
+        new_order3_id = "1234"
+        resp = self.client.get(f"{BASE_URL}/{new_order3_id}")
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+    
+    def test_get_order_by_nonexistant_name(self):
+        test_order = OrderFactory()
+        resp = self.client.post(BASE_URL, json=test_order.serialize())
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        
+        new_order4 = resp.get_json()
+        new_order4_name = "fake name"
+        resp = self.client.get(f"{BASE_URL}/{new_order4_name}")
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
     ######################################################################
     #  TESTS FOR CREATE ITEM
     ######################################################################
@@ -217,9 +258,9 @@ class TestOrderService(TestCase):
     ######################################################################
 
     ######################################################################
-    # /\/\/\/   TESTS FOR LIST ITEMS GO HERE
+    # /\/\/\/   TESTS FOR LIST ITEM GO HERE
     ######################################################################
-    
+
 
 
     ######################################################################
