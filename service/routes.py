@@ -207,7 +207,7 @@ def list_items(order_id):
 # RETRIEVE ITEMS FROM AN ORDER
 ######################################################################
 
-@app.route("/orders/<int:order_id>/items>", methods=["GET"])
+@app.route("/orders/<int:order_id>/items", methods=["GET"])
 def get_items(order_id):
     """
     Get all Items from for a given order id 

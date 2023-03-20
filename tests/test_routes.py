@@ -216,14 +216,13 @@ class TestOrderService(TestCase):
     #  TESTS FOR LIST ITEMS
     ######################################################################
     def test_get_items(self):
-        #     """It should Get an item from an order"""
-        #     # create a known item
-   
-        order = self._create_order(1)[0]
-        item = itemFactory()
+        """It should Get an item from an order"""
+        
+        order = self._create_orders(1)[0]
+        item = ItemFactory()
         resp = self.client.post(
             f"{BASE_URL}/{order.id}/items",
-            json=items.serialize(),
+            json=item.serialize(),
             content_type="application/json",
             )
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
@@ -232,11 +231,11 @@ class TestOrderService(TestCase):
         logging.debug(data)
         item_id = data["id"]
 
-    #     # retrieve it back
+        #  retrieve it back
         resp = self.client.get(
-            f"{BASE_URL}/{order.id}/items",
+            f"{BASE_URL}/{order.id}/items/{item_id}",
             content_type="application/json",
-            )
+        )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
         data = resp.get_json()
