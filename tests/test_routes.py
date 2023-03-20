@@ -194,7 +194,7 @@ class TestOrderService(TestCase):
         self.assertEqual(data[0]["name"], orders[1].name)
 
     def test_list_nonexistent_order(self):
-        """It should not List an Order that is not found"""
+        """It should not List an Order where ID is not found"""
         test_order = OrderFactory()
         resp = self.client.post(BASE_URL, json=test_order.serialize())
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
@@ -205,6 +205,7 @@ class TestOrderService(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_get_order_by_nonexistent_name(self):
+        """It should not List an Order where name is not found"""
         test_order = OrderFactory()
         resp = self.client.post(BASE_URL, json=test_order.serialize())
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)

@@ -189,12 +189,6 @@ def create_items(order_id):
 # LIST ORDER ITEMS
 ######################################################################
 
-
-
-######################################################################
-# RETRIEVE ITEMS FROM AN ORDER
-######################################################################
-
 @app.route("/orders/<int:order_id>/items", methods=["GET"])
 def list_items(order_id):
     """Returns all of the Items for an Order"""
@@ -268,7 +262,6 @@ def update_items(order_id, item_id):
     return make_response(jsonify(item.serialize()), status.HTTP_200_OK)
 
 
-
 ######################################################################
 # DELETE AN ORDER ITEM
 ######################################################################
@@ -289,7 +282,6 @@ def delete_items(order_id, item_id):
         item.delete()
 
     return make_response("", status.HTTP_204_NO_CONTENT)
-
 
 
 ######################################################################
