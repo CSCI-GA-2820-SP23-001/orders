@@ -247,15 +247,60 @@ class TestOrderService(TestCase):
     #  TESTS FOR DELETE ITEM
     ######################################################################
 
-    ######################################################################
-    # /\/\/\/   TESTS FOR DELETE ITEM GO HERE
-    ######################################################################
+    def test_delete_item(self):
+        """It should Delete an Item"""
+        order = self._create_orders(1)[0]
+        item = ItemFactory()
+        resp = self.client.post(
+            f"{BASE_URL}/{order.id}/items",
+            json=item.serialize(),
+            content_type="application/json",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        data = resp.get_json()
+        logging.debug(data)
+        item_id = data["id"]
+
+        # send delete request
+        resp = self.client.delete(
+            f"{BASE_URL}/{item.id}/items/{item_id}",
+            content_type="application/json",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+
+        # retrieve it back and make sure address is not there
+        resp = self.client.get(
+            f"{BASE_URL}/{order.id}/items/{item_id}",
+            content_type="application/json",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
 
+    def test_delete_nonexistant_item(self):
+        """It should Not Delete an Item that doesn't exist"""
+        order = self._create_orders(1)[0]
+        item = ItemFactory()
+        resp = self.client.post(
+            f"{BASE_URL}/{order.id}/items",
+            json=item.serialize(),
+            content_type="application/json",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        data = resp.get_json()
+        logging.debug(data)
+        item_id = "1234"
+
+        #send delete request
+        resp = self.client.delete(
+           f"{BASE_URL}/{item.id}/items/{item_id}",
+           content_type="application/json",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
 
     ######################################################################
     #  TESTS FOR LIST ITEMS
     ######################################################################
+
     def test_list_items(self):
         """It should Get an item from an order"""
         
@@ -382,78 +427,6 @@ class TestOrderService(TestCase):
     #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
     #     data = resp.get_json()
     #     self.assertEqual(data[0]["name"], accounts[1].name)
-
-
-
-    # def test_create_account(self):
-    #     """It should Create a new Account"""
-    #     account = AccountFactory()
-    #     resp = self.client.post(
-    #         BASE_URL, json=account.serialize(), content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-
-    #     # Make sure location header is set
-    #     location = resp.headers.get("Location", None)
-    #     self.assertIsNotNone(location)
-
-    #     # Check the data is correct
-    #     new_account = resp.get_json()
-    #     self.assertEqual(new_account["name"], account.name, "Names does not match")
-    #     self.assertEqual(
-    #         new_account["addresses"], account.addresses, "Address does not match"
-    #     )
-    #     self.assertEqual(new_account["email"], account.email, "Email does not match")
-    #     self.assertEqual(
-    #         new_account["phone_number"], account.phone_number, "Phone does not match"
-    #     )
-    #     self.assertEqual(
-    #         new_account["date_joined"],
-    #         str(account.date_joined),
-    #         "Date Joined does not match",
-    #     )
-
-    #     # Check that the location header was correct by getting it
-    #     resp = self.client.get(location, content_type="application/json")
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     new_account = resp.get_json()
-    #     self.assertEqual(new_account["name"], account.name, "Names does not match")
-    #     self.assertEqual(
-    #         new_account["addresses"], account.addresses, "Address does not match"
-    #     )
-    #     self.assertEqual(new_account["email"], account.email, "Email does not match")
-    #     self.assertEqual(
-    #         new_account["phone_number"], account.phone_number, "Phone does not match"
-    #     )
-    #     self.assertEqual(
-    #         new_account["date_joined"],
-    #         str(account.date_joined),
-    #         "Date Joined does not match",
-    #     )
-
-    # def test_update_account(self):
-    #     """It should Update an existing Account"""
-    #     # create an Account to update
-    #     test_account = AccountFactory()
-    #     resp = self.client.post(BASE_URL, json=test_account.serialize())
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-
-    #     # update the pet
-    #     new_account = resp.get_json()
-    #     new_account["name"] = "Happy-Happy Joy-Joy"
-    #     new_account_id = new_account["id"]
-    #     resp = self.client.put(f"{BASE_URL}/{new_account_id}", json=new_account)
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     updated_account = resp.get_json()
-    #     self.assertEqual(updated_account["name"], "Happy-Happy Joy-Joy")
-
-    # def test_delete_account(self):
-    #     """It should Delete an Account"""
-    #     # get the id of an account
-    #     account = self._create_accounts(1)[0]
-    #     resp = self.client.delete(f"{BASE_URL}/{account.id}")
-    #     self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
-
 
 
     # ######################################################################
