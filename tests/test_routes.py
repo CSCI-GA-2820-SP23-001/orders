@@ -237,9 +237,44 @@ class TestOrderService(TestCase):
     #  TESTS FOR UPDATE ITEM
     ######################################################################
 
-    ######################################################################
-    # /\/\/\/   TESTS FOR UPDATE ITEM GO HERE
-    ######################################################################
+    def test_update_item(self):
+        """It should Update an item on an account"""
+        # create a known item
+        account = self._create_accounts(1)[0]
+        item = ItemFactory()
+        resp = self.client.post(
+            f"{BASE_URL}/{account.id}/items",
+            json=item.serialize(),
+            content_type="application/json",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        data = resp.get_json()
+        logging.debug(data)
+        item_id = data["id"]
+        data["name"] = "XXXX"
+
+        # send the update back
+        resp = self.client.put(
+            f"{BASE_URL}/{account.id}/items/{item_id}",
+            json=data,
+            content_type="application/json",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        # retrieve it back
+        resp = self.client.get(
+            f"{BASE_URL}/{account.id}/items/{item_id}",
+            content_type="application/json",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        data = resp.get_json()
+        logging.debug(data)
+        self.assertEqual(data["id"], item_id)
+        self.assertEqual(data["account_id"], account.id)
+        self.assertEqual(data["name"], "XXXX")
+
 
 
 
@@ -512,43 +547,6 @@ class TestOrderService(TestCase):
 
 
    
-    # def test_update_address(self):
-    #     """It should Update an address on an account"""
-    #     # create a known address
-    #     account = self._create_accounts(1)[0]
-    #     address = AddressFactory()
-    #     resp = self.client.post(
-    #         f"{BASE_URL}/{account.id}/addresses",
-    #         json=address.serialize(),
-    #         content_type="application/json",
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-
-    #     data = resp.get_json()
-    #     logging.debug(data)
-    #     address_id = data["id"]
-    #     data["name"] = "XXXX"
-
-    #     # send the update back
-    #     resp = self.client.put(
-    #         f"{BASE_URL}/{account.id}/addresses/{address_id}",
-    #         json=data,
-    #         content_type="application/json",
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-    #     # retrieve it back
-    #     resp = self.client.get(
-    #         f"{BASE_URL}/{account.id}/addresses/{address_id}",
-    #         content_type="application/json",
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-    #     data = resp.get_json()
-    #     logging.debug(data)
-    #     self.assertEqual(data["id"], address_id)
-    #     self.assertEqual(data["account_id"], account.id)
-    #     self.assertEqual(data["name"], "XXXX")
 
     # def test_delete_address(self):
     #     """It should Delete an Address"""
