@@ -64,6 +64,7 @@ class ItemFactory(factory.Factory):
             # self.sku = data["sku"]
     id = factory.Sequence(lambda n: n)
     sku = factory.Sequence(lambda n: n)
+    item_price = round(random.uniform(1.00, 100.00), 2)
     order_id = None
     order = factory.SubFactory(OrderFactory)
     

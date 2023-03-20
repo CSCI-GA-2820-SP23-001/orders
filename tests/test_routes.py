@@ -256,6 +256,33 @@ class TestOrderService(TestCase):
     ######################################################################
     #  TESTS FOR LIST ITEMS
     ######################################################################
+    def test_list_items(self):
+        """It should Get an item from an order"""
+        
+        order = self._create_orders(1)[0]
+        item = ItemFactory()
+        resp = self.client.post(
+            f"{BASE_URL}/{order.id}/items",
+            json=item.serialize(),
+            content_type="application/json",
+            )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        data = resp.get_json()
+        logging.debug(data)
+        item_id = data["id"]
+
+        #  retrieve it back
+        resp = self.client.get(
+            f"{BASE_URL}/{order.id}/items/{item_id}",
+            content_type="application/json",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        data = resp.get_json()
+        logging.debug(data)
+        self.assertEqual(data["order_id"], order.id)
+        self.assertEqual(data["sku"], item.sku)
 
     ######################################################################
     # /\/\/\/   TESTS FOR LIST ITEM GO HERE
@@ -460,38 +487,7 @@ class TestOrderService(TestCase):
 
 
 
-    # def test_get_address(self):
-    #     """It should Get an address from an account"""
-    #     # create a known address
-    #     account = self._create_accounts(1)[0]
-    #     address = AddressFactory()
-    #     resp = self.client.post(
-    #         f"{BASE_URL}/{account.id}/addresses",
-    #         json=address.serialize(),
-    #         content_type="application/json",
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-
-    #     data = resp.get_json()
-    #     logging.debug(data)
-    #     address_id = data["id"]
-
-    #     # retrieve it back
-    #     resp = self.client.get(
-    #         f"{BASE_URL}/{account.id}/addresses/{address_id}",
-    #         content_type="application/json",
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-    #     data = resp.get_json()
-    #     logging.debug(data)
-    #     self.assertEqual(data["account_id"], account.id)
-    #     self.assertEqual(data["name"], address.name)
-    #     self.assertEqual(data["street"], address.street)
-    #     self.assertEqual(data["city"], address.city)
-    #     self.assertEqual(data["state"], address.state)
-    #     self.assertEqual(data["postal_code"], address.postal_code)
-
+   
     # def test_update_address(self):
     #     """It should Update an address on an account"""
     #     # create a known address
