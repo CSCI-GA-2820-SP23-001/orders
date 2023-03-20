@@ -221,7 +221,7 @@ def get_items(order_id):
 # We should implement below find function in models.py for Order Class ? @bart
 # results = Item.find_by_order_id(order_id)
     items = [result.serialize() for result in results]
-    app.logger.info(“Returning %d items”, len(items))
+    app.logger.info("Returning %d items", len(items))
     return jsonify(items), status.HTTP_200_OK
 
 
