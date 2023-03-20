@@ -290,7 +290,7 @@ class TestOrderService(TestCase):
 
     def test_get_items_list(self):
         """It should Get a list of Items"""
-        orders = self._create_orders(1)[0]
+        order = self._create_orders(1)[0]
         item_list = ItemFactory.create_batch(2)
         
         #add two items to account and list
