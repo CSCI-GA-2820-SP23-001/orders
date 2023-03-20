@@ -140,7 +140,7 @@ class TestOrderService(TestCase):
         updated_order = resp.get_json()
         self.assertEqual(updated_order["name"], "Happy-Happy Joy-Joy")
 
-    def test_update_nonexistant_order(self):
+    def test_update_nonexistent_order(self):
         """It should not Update an Order that is not found"""
         test_order = OrderFactory()
         resp = self.client.post(BASE_URL, json=test_order.serialize())
@@ -162,7 +162,7 @@ class TestOrderService(TestCase):
         resp = self.client.delete(f"{BASE_URL}/{order.id}")
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_delete_nonexistant_order(self):
+    def test_delete_nonexistent_order(self):
         """It should not Delete an Order that is not found"""
         test_order = OrderFactory()
         resp = self.client.post(BASE_URL, json=test_order.serialize())
@@ -193,7 +193,7 @@ class TestOrderService(TestCase):
         data = resp.get_json()
         self.assertEqual(data[0]["name"], orders[1].name)
 
-    def test_list_nonexistant_order(self):
+    def test_list_nonexistent_order(self):
         """It should not List an Order that is not found"""
         test_order = OrderFactory()
         resp = self.client.post(BASE_URL, json=test_order.serialize())
@@ -204,7 +204,7 @@ class TestOrderService(TestCase):
         resp = self.client.get(f"{BASE_URL}/{new_order3_id}")
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_get_order_by_nonexistant_name(self):
+    def test_get_order_by_nonexistent_name(self):
         test_order = OrderFactory()
         resp = self.client.post(BASE_URL, json=test_order.serialize())
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
@@ -219,21 +219,21 @@ class TestOrderService(TestCase):
     ######################################################################
 
     def test_add_item(self):
-            """It should Add an Item to an Order"""
-            order = self._create_orders(1)[0]
-            item = ItemFactory()
-            resp = self.client.post(
-                f"{BASE_URL}/{order.id}/items",
-                json=item.serialize(),
-                content_type="application/json",
-            )
-            self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-            data = resp.get_json()
-            logging.debug(data)
-            self.assertEqual(data["order_id"], order.id)
-            self.assertEqual(data["id"], item.id)
-            self.assertEqual(data["item_price"], item.item_price)
-            self.assertEqual(data["sku"], item.sku)
+        """It should Add an Item to an Order"""
+        order = self._create_orders(1)[0]
+        item = ItemFactory()
+        resp = self.client.post(
+            f"{BASE_URL}/{order.id}/items",
+            json=item.serialize(),
+            content_type="application/json",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        data = resp.get_json()
+        logging.debug(data)
+        self.assertEqual(data["order_id"], order.id)
+        self.assertEqual(data["id"], item.id)
+        self.assertEqual(data["item_price"], item.item_price)
+        self.assertEqual(data["sku"], item.sku)
 
     ######################################################################
     #  TESTS FOR READ ITEM
@@ -341,7 +341,7 @@ class TestOrderService(TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_delete_nonexistant_item(self):
+    def test_delete_nonexistent_item(self):
         """It should Not Delete an Item that doesn't exist"""
         order = self._create_orders(1)[0]
         item = ItemFactory()
