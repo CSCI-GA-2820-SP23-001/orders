@@ -140,7 +140,7 @@ class TestOrderService(TestCase):
         updated_order = resp.get_json()
         self.assertEqual(updated_order["name"], "Happy-Happy Joy-Joy")
 
-    def test_update_nonexistant_order(self):
+    def test_update_nonexistent_order(self):
         """It should not Update an Order that is not found"""
         test_order = OrderFactory()
         resp = self.client.post(BASE_URL, json=test_order.serialize())
@@ -162,7 +162,7 @@ class TestOrderService(TestCase):
         resp = self.client.delete(f"{BASE_URL}/{order.id}")
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_delete_nonexistant_order(self):
+    def test_delete_nonexistent_order(self):
         """It should not Delete an Order that is not found"""
         test_order = OrderFactory()
         resp = self.client.post(BASE_URL, json=test_order.serialize())
@@ -193,7 +193,7 @@ class TestOrderService(TestCase):
         data = resp.get_json()
         self.assertEqual(data[0]["name"], orders[1].name)
 
-    def test_list_nonexistant_order(self):
+    def test_list_nonexistent_order(self):
         """It should not List an Order that is not found"""
         test_order = OrderFactory()
         resp = self.client.post(BASE_URL, json=test_order.serialize())
@@ -204,7 +204,7 @@ class TestOrderService(TestCase):
         resp = self.client.get(f"{BASE_URL}/{new_order3_id}")
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_get_order_by_nonexistant_name(self):
+    def test_get_order_by_nonexistent_name(self):
         test_order = OrderFactory()
         resp = self.client.post(BASE_URL, json=test_order.serialize())
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
@@ -218,9 +218,22 @@ class TestOrderService(TestCase):
     #  TESTS FOR CREATE ITEM
     ######################################################################
 
-    ######################################################################
-    # /\/\/\/   TESTS FOR CREATE ITEM GO HERE
-    ######################################################################
+    def test_add_item(self):
+        """It should Add an Item to an Order"""
+        order = self._create_orders(1)[0]
+        item = ItemFactory()
+        resp = self.client.post(
+            f"{BASE_URL}/{order.id}/items",
+            json=item.serialize(),
+            content_type="application/json",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        data = resp.get_json()
+        logging.debug(data)
+        self.assertEqual(data["order_id"], order.id)
+        self.assertEqual(data["id"], item.id)
+        self.assertEqual(data["item_price"], item.item_price)
+        self.assertEqual(data["sku"], item.sku)
 
     ######################################################################
     #  TESTS FOR READ ITEM
@@ -328,7 +341,7 @@ class TestOrderService(TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_delete_nonexistant_item(self):
+    def test_delete_nonexistent_item(self):
         """It should Not Delete an Item that doesn't exist"""
         order = self._create_orders(1)[0]
         item = ItemFactory()
@@ -446,85 +459,3 @@ class TestOrderService(TestCase):
         self.assertEqual(data["order_id"], order.id)
         self.assertEqual(data["item_price"], item.item_price)
         self.assertEqual(data["sku"], item.sku)
-
-    ######################################################################
-    #  S A M P L E    A C C O U N T   T E S T   C A S E S
-    ######################################################################
-
-    # def test_index(self):
-    #     """It should call the Home Page"""
-    #     resp = self.client.get("/")
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-    # def test_get_account_list(self):
-    #     """It should Get a list of Accounts"""
-    #     self._create_accounts(5)
-    #     resp = self.client.get(BASE_URL)
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     data = resp.get_json()
-    #     self.assertEqual(len(data), 5)
-
-    # def test_get_account_by_name(self):
-    #     """It should Get an Account by Name"""
-    #     accounts = self._create_accounts(3)
-    #     resp = self.client.get(BASE_URL, query_string=f"name={accounts[1].name}")
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     data = resp.get_json()
-    #     self.assertEqual(data[0]["name"], accounts[1].name)
-
-    # ######################################################################
-    # #  A D D R E S S   T E S T   C A S E S
-    # ######################################################################
-
-    # def test_get_address_list(self):
-    #     """It should Get a list of Addresses"""
-    #     # add two addresses to account
-    #     account = self._create_accounts(1)[0]
-    #     address_list = AddressFactory.create_batch(2)
-
-    #     # Create address 1
-    #     resp = self.client.post(
-    #         f"{BASE_URL}/{account.id}/addresses", json=address_list[0].serialize()
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-
-    #     # Create address 2
-    #     resp = self.client.post(
-    #         f"{BASE_URL}/{account.id}/addresses", json=address_list[1].serialize()
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-
-    #     # get the list back and make sure there are 2
-    #     resp = self.client.get(f"{BASE_URL}/{account.id}/addresses")
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-    #     data = resp.get_json()
-    #     self.assertEqual(len(data), 2)
-
-    # def test_delete_address(self):
-    #     """It should Delete an Address"""
-    #     account = self._create_accounts(1)[0]
-    #     address = AddressFactory()
-    #     resp = self.client.post(
-    #         f"{BASE_URL}/{account.id}/addresses",
-    #         json=address.serialize(),
-    #         content_type="application/json",
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-    #     data = resp.get_json()
-    #     logging.debug(data)
-    #     address_id = data["id"]
-
-    #     # send delete request
-    #     resp = self.client.delete(
-    #         f"{BASE_URL}/{account.id}/addresses/{address_id}",
-    #         content_type="application/json",
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
-
-    #     # retrieve it back and make sure address is not there
-    #     resp = self.client.get(
-    #         f"{BASE_URL}/{account.id}/addresses/{address_id}",
-    #         content_type="application/json",
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
