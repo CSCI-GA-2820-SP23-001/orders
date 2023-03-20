@@ -55,13 +55,15 @@ def create_order():
     )
 
 
-# RETRIEVE/READ AN ORDER
+######################################################################
+# READ AN ORDER
+######################################################################
 
 @app.route("/orders/<int:order_id>", methods=["GET"])
 def get_orders(order_id):
     """
     Retrieve a single Order
-    This endpoint will return an Order based on it's id
+    This endpoint will return an Order based on its id
     """
     app.logger.info("Request for Order with id: %s", order_id)
 
@@ -79,6 +81,7 @@ def get_orders(order_id):
 ######################################################################
 # LIST ALL ORDERS
 ######################################################################
+
 @app.route("/orders", methods=["GET"])
 def list_orders():
     """Returns all of the Orders"""
@@ -148,8 +151,9 @@ def delete_orders(order_id):
 #                ITEMS   M E T H O D S
 # ---------------------------------------------------------------------
 
-
+######################################################################
 # CREATE/ADD AN ITEM TO AN ORDER
+######################################################################
 
 @app.route("/orders/<int:order_id>/items", methods=["POST"])
 def create_items(order_id):
@@ -181,9 +185,9 @@ def create_items(order_id):
 
     return make_response(jsonify(message), status.HTTP_201_CREATED)
 
-
+######################################################################
 # LIST ORDER ITEMS
-
+######################################################################
 
 
 
@@ -236,6 +240,7 @@ def get_items(order_id, item_id):
 ######################################################################
 # UPDATE AN ORDER ITEM
 ######################################################################
+
 @app.route("/orders/<int:order_id>/items/<int:item_id>", methods=["PUT"])
 def update_items(order_id, item_id):
     """
@@ -267,6 +272,7 @@ def update_items(order_id, item_id):
 ######################################################################
 # DELETE AN ORDER ITEM
 ######################################################################
+
 @app.route("/orders/<int:order_id>/items/<int:item_id>", methods=["DELETE"])
 def delete_items(order_id, item_id):
     """
@@ -289,7 +295,6 @@ def delete_items(order_id, item_id):
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
-
 
 def check_content_type(media_type):
     """Checks that the media type is correct"""
