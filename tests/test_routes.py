@@ -227,36 +227,7 @@ class TestOrderService(TestCase):
     #  TESTS FOR READ ITEM
     ######################################################################
 
-    ######################################################################
-    # /\/\/\/   TESTS FOR READ ITEM GO HERE
-    ######################################################################
-
-
-
-    ######################################################################
-    #  TESTS FOR UPDATE ITEM
-    ######################################################################
-
-    ######################################################################
-    # /\/\/\/   TESTS FOR UPDATE ITEM GO HERE
-    ######################################################################
-
-
-
-    ######################################################################
-    #  TESTS FOR DELETE ITEM
-    ######################################################################
-
-    ######################################################################
-    # /\/\/\/   TESTS FOR DELETE ITEM GO HERE
-    ######################################################################
-
-
-
-    ######################################################################
-    #  TESTS FOR LIST ITEMS
-    ######################################################################
-    def test_list_items(self):
+    def test_get_item(self):
         """It should Get an item from an order"""
         
         order = self._create_orders(1)[0]
@@ -283,6 +254,56 @@ class TestOrderService(TestCase):
         logging.debug(data)
         self.assertEqual(data["order_id"], order.id)
         self.assertEqual(data["sku"], item.sku)
+
+
+    ######################################################################
+    #  TESTS FOR UPDATE ITEM
+    ######################################################################
+
+    ######################################################################
+    # /\/\/\/   TESTS FOR UPDATE ITEM GO HERE
+    ######################################################################
+
+
+
+    ######################################################################
+    #  TESTS FOR DELETE ITEM
+    ######################################################################
+
+    ######################################################################
+    # /\/\/\/   TESTS FOR DELETE ITEM GO HERE
+    ######################################################################
+
+
+
+    ######################################################################
+    #  TESTS FOR LIST ITEMS
+    ######################################################################
+    
+    def test_get_address_list(self):
+        """It should Get a list of Addresses"""
+        # add two items to account
+        order = self._create_orders(1)[0]
+        item_list = ItemFactory.create_batch(2)
+
+        # Create item 1
+        resp = self.client.post(
+            f"{BASE_URL}/{order.id}/items", json=item_list[0].serialize()
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        # Create item 2
+        resp = self.client.post(
+            f"{BASE_URL}/{order.id}/items", json=item_list[1].serialize()
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        # get the list back and make sure there are 2
+        resp = self.client.get(f"{BASE_URL}/{order.id}/items")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        data = resp.get_json()
+        self.assertEqual(len(data), 2)
 
     ######################################################################
     # /\/\/\/   TESTS FOR LIST ITEM GO HERE
@@ -460,30 +481,7 @@ class TestOrderService(TestCase):
     # #  A D D R E S S   T E S T   C A S E S
     # ######################################################################
 
-    # def test_get_address_list(self):
-    #     """It should Get a list of Addresses"""
-    #     # add two addresses to account
-    #     account = self._create_accounts(1)[0]
-    #     address_list = AddressFactory.create_batch(2)
-
-    #     # Create address 1
-    #     resp = self.client.post(
-    #         f"{BASE_URL}/{account.id}/addresses", json=address_list[0].serialize()
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-
-    #     # Create address 2
-    #     resp = self.client.post(
-    #         f"{BASE_URL}/{account.id}/addresses", json=address_list[1].serialize()
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-
-    #     # get the list back and make sure there are 2
-    #     resp = self.client.get(f"{BASE_URL}/{account.id}/addresses")
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-    #     data = resp.get_json()
-    #     self.assertEqual(len(data), 2)
+    
 
 
 
