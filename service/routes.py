@@ -184,6 +184,13 @@ def create_items(order_id):
 
 # LIST ORDER ITEMS
 
+
+
+
+######################################################################
+# RETRIEVE ITEMS FROM AN ORDER
+######################################################################
+
 @app.route("/orders/<int:order_id>/items", methods=["GET"])
 def list_items(order_id):
     """Returns all of the Items for an Order"""
@@ -202,29 +209,29 @@ def list_items(order_id):
 
     return make_response(jsonify(results), status.HTTP_200_OK)
 
-
 ######################################################################
-# RETRIEVE ITEMS FROM AN ORDER
+# RETRIEVE AN ITEM FROM AN ORDER
 ######################################################################
 
-@app.route("/orders/<int:order_id>/items", methods=["GET"])
-def get_items(order_id):
+@app.route("/orders/<int:order_id>/items/<int:item_id>", methods=["GET"])
+def get_items(order_id, item_id):
     """
-    Get all Items from for a given order id 
-    
+    Get an Address
+    This endpoint returns just an address
     """
     app.logger.info(
-        "Request to retrieve Items for Order id: %s", (order_id)
+        "Request to retrieve Address %s for Account id: %s", (item_id, order_id)
     )
 
-    results = []
-# We should implement below find function in models.py for Order Class ? @bart
-# results = Item.find_by_order_id(order_id)
-    items = [result.serialize() for result in results]
-    app.logger.info("Returning %d items", len(items))
-    return jsonify(items), status.HTTP_200_OK
+    # See if the address exists and abort if it doesn't
+    item = Item.find(item_id)
+    if not item:
+        abort(
+            status.HTTP_404_NOT_FOUND,
+            f"Account with id '{item_id}' could not be found.",
+        )
 
-
+    return make_response(jsonify(item.serialize()), status.HTTP_200_OK)
 
 ######################################################################
 # UPDATE AN ORDER ITEM

@@ -215,7 +215,7 @@ class TestOrderService(TestCase):
     ######################################################################
     #  TESTS FOR LIST ITEMS
     ######################################################################
-    def test_get_items(self):
+    def test_list_items(self):
         """It should Get an item from an order"""
         
         order = self._create_orders(1)[0]
@@ -241,7 +241,7 @@ class TestOrderService(TestCase):
         data = resp.get_json()
         logging.debug(data)
         self.assertEqual(data["order_id"], order.id)
-        self.assertEqual(data["name"], item.name)
+        self.assertEqual(data["sku"], item.sku)
 
     ######################################################################
     # /\/\/\/   TESTS FOR LIST ITEMS GO HERE
