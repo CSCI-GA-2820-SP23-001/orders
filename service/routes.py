@@ -204,28 +204,26 @@ def list_items(order_id):
 
 
 ######################################################################
-# RETRIEVE AN ITEM FROM ORDER
+# RETRIEVE ITEMS FROM AN ORDER
 ######################################################################
 
-@app.route("/orders/<int:order_id>/items/<int:item_id>", methods=["GET"])
-def get_items(order_id, item_id):
+@app.route("/orders/<int:order_id>/items>", methods=["GET"])
+def get_items(order_id):
     """
-    Get an Item
-    This endpoint returns just an item
+    Get all Items from for a given order id 
+    
     """
     app.logger.info(
-        "Request to retrieve Item %s for Order id: %s", (item_id, order_id)
+        "Request to retrieve Items for Order id: %s", (order_id)
     )
 
-    # See if the item exists and abort if it doesn't
-    item = Item.find(item_id)
-    if not item:
-        abort(
-            status.HTTP_404_NOT_FOUND,
-            f"Order with id '{order_id}' could not be found.",
-        )
+    results = []
+# We should implement below find function in models.py for Order Class ? @bart
+# results = Item.find_by_order_id(order_id)
+    items = [result.serialize() for result in results]
+    app.logger.info(“Returning %d items”, len(items))
+    return jsonify(items), status.HTTP_200_OK
 
-    return make_response(jsonify(item.serialize()), status.HTTP_200_OK)
 
 
 ######################################################################
