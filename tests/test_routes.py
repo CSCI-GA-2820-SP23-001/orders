@@ -168,7 +168,6 @@ class TestOrderService(TestCase):
         resp = self.client.post(BASE_URL, json=test_order.serialize())
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
-        new_order2 = resp.get_json()
         new_order2_id = "1234"
         resp = self.client.delete(f"{BASE_URL}/{new_order2_id}")
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
@@ -199,17 +198,16 @@ class TestOrderService(TestCase):
         resp = self.client.post(BASE_URL, json=test_order.serialize())
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
-        new_order3 = resp.get_json()
         new_order3_id = "1234"
         resp = self.client.get(f"{BASE_URL}/{new_order3_id}")
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_get_order_by_nonexistent_name(self):
+        """It should not List an Order that has a name that does not exist"""
         test_order = OrderFactory()
         resp = self.client.post(BASE_URL, json=test_order.serialize())
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
-        new_order4 = resp.get_json()
         new_order4_name = "fake name"
         resp = self.client.get(f"{BASE_URL}/{new_order4_name}")
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)

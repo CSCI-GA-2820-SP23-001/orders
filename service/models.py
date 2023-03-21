@@ -13,6 +13,7 @@ logger = logging.getLogger("flask.app")
 # Create the SQLAlchemy object to be initialized later in init_db()
 db = SQLAlchemy()
 
+
 def init_db(app):
     """Initialize the SQLAlchemy app"""
     Order.init_db(app)
@@ -20,7 +21,6 @@ def init_db(app):
 
 class DataValidationError(Exception):
     """ Used for an data validation errors when deserializing """
-
 
 
 ######################################################################
@@ -95,7 +95,8 @@ class Item(db.Model, PersistentBase):
 
     # Table Schema
     id = db.Column(db.Integer, primary_key=True)
-    order_id = db.Column(db.Integer, db.ForeignKey("order.id", ondelete="CASCADE"), nullable=False)
+    order_id = db.Column(db.Integer, db.ForeignKey(
+        "order.id", ondelete="CASCADE"), nullable=False)
     item_price = db.Column(db.Float)
     sku = db.Column(db.Integer)
 
@@ -126,7 +127,8 @@ class Item(db.Model, PersistentBase):
             self.item_price = data["item_price"]
             self.sku = data["sku"]
         except KeyError as error:
-            raise DataValidationError("Invalid Item: missing " + error.args[0]) from error
+            raise DataValidationError(
+                "Invalid Item: missing " + error.args[0]) from error
         except TypeError as error:
             raise DataValidationError(
                 "Invalid Item: body of request contained "
@@ -155,7 +157,6 @@ class Order(db.Model, PersistentBase):
     shipping_price = db.Column(db.Float)
     date_created = db.Column(db.Date(), nullable=False, default=date.today())
     items = db.relationship("Item", backref="order", passive_deletes=True)
-    
 
     def __repr__(self):
         return f"<Order id=[{self.id}]>"
@@ -199,7 +200,8 @@ class Order(db.Model, PersistentBase):
                 item.deserialize(json_item)
                 self.items.append(item)
         except KeyError as error:
-            raise DataValidationError("Invalid Order: missing " + error.args[0]) from error
+            raise DataValidationError(
+                "Invalid Order: missing " + error.args[0]) from error
         except TypeError as error:
             raise DataValidationError(
                 "Invalid Order: body of request contained "

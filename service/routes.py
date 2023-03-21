@@ -104,6 +104,7 @@ def list_orders():
 # UPDATE AN EXISTING ORDER
 ######################################################################
 
+
 @app.route("/orders/<int:order_id>", methods=["PUT"])
 def update_orders(order_id):
     """
@@ -130,6 +131,7 @@ def update_orders(order_id):
 ######################################################################
 # DELETE AN EXISTING ORDER
 ######################################################################
+
 
 @app.route("/orders/<int:order_id>", methods=["DELETE"])
 def delete_orders(order_id):
@@ -161,7 +163,8 @@ def create_items(order_id):
     Create an Item on an Order
     This endpoint will add an item to an order
     """
-    app.logger.info("Request to create an Item for Order with id: %s", order_id)
+    app.logger.info(
+        "Request to create an Item for Order with id: %s", order_id)
     check_content_type("application/json")
 
     # See if the order exists and abort if it doesn't
@@ -190,7 +193,6 @@ def create_items(order_id):
 ######################################################################
 
 
-
 ######################################################################
 # RETRIEVE ITEMS FROM AN ORDER
 ######################################################################
@@ -217,6 +219,7 @@ def list_items(order_id):
 # RETRIEVE AN ITEM FROM AN ORDER
 ######################################################################
 
+
 @app.route("/orders/<int:order_id>/items/<int:item_id>", methods=["GET"])
 def get_items(order_id, item_id):
     """
@@ -224,7 +227,8 @@ def get_items(order_id, item_id):
     This endpoint returns just an address
     """
     app.logger.info(
-        "Request to retrieve Address %s for Account id: %s", (item_id, order_id)
+        "Request to retrieve Address %s for Account id: %s", (
+            item_id, order_id)
     )
 
     # See if the address exists and abort if it doesn't
@@ -240,6 +244,7 @@ def get_items(order_id, item_id):
 ######################################################################
 # UPDATE AN ORDER ITEM
 ######################################################################
+
 
 @app.route("/orders/<int:order_id>/items/<int:item_id>", methods=["PUT"])
 def update_items(order_id, item_id):
@@ -268,7 +273,6 @@ def update_items(order_id, item_id):
     return make_response(jsonify(item.serialize()), status.HTTP_200_OK)
 
 
-
 ######################################################################
 # DELETE AN ORDER ITEM
 ######################################################################
@@ -289,7 +293,6 @@ def delete_items(order_id, item_id):
         item.delete()
 
     return make_response("", status.HTTP_204_NO_CONTENT)
-
 
 
 ######################################################################
