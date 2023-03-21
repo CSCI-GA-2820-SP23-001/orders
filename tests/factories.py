@@ -59,12 +59,8 @@ class ItemFactory(factory.Factory):
         """Persistent class"""
         model = Item
 
-            #     self.order_id = data["order_id"]
-            # self.item_price = data["item_price"]
-            # self.sku = data["sku"]
     id = factory.Sequence(lambda n: n)
     sku = factory.Sequence(lambda n: n)
     item_price = round(random.uniform(1.00, 100.00), 2)
     order_id = None
     order = factory.SubFactory(OrderFactory)
-    
