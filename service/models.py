@@ -156,6 +156,7 @@ class Order(db.Model, PersistentBase):
     postal_code = db.Column(db.String(16))
     shipping_price = db.Column(db.Float)
     date_created = db.Column(db.Date(), nullable=False, default=date.today())
+    status = db.Column(db.String(64))
     items = db.relationship("Item", backref="order", passive_deletes=True)
 
     def __repr__(self):
@@ -172,6 +173,7 @@ class Order(db.Model, PersistentBase):
             "postal_code": self.postal_code,
             "shipping_price": self.shipping_price,
             "date_created": self.date_created.isoformat(),
+            "status": self.status,
             "items": []
         }
         for item in self.items:
@@ -193,6 +195,7 @@ class Order(db.Model, PersistentBase):
             self.postal_code = data["postal_code"]
             self.shipping_price = data["shipping_price"]
             self.date_created = date.fromisoformat(data["date_created"])
+            self.status = data["status"]
             # handle inner list of items
             item_list = data.get("items")
             for json_item in item_list:
