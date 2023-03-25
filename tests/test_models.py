@@ -58,7 +58,8 @@ class TestOrder(unittest.TestCase):
             state=fake_order.state,
             postal_code=fake_order.postal_code,
             shipping_price=fake_order.shipping_price,
-            date_created=fake_order.date_created
+            date_created=fake_order.date_created,
+            status=fake_order.status
         )
         self.assertIsNotNone(order)
         self.assertEqual(order.id, None)
@@ -69,6 +70,8 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(order.postal_code, fake_order.postal_code)
         self.assertEqual(order.shipping_price, fake_order.shipping_price)
         self.assertEqual(order.date_created, fake_order.date_created)
+        self.assertEqual(order.shipping_price, fake_order.shipping_price)
+        self.assertEqual(order.status, fake_order.status)
 
     def test_add_an_order(self):
         """It should Create an order and add it to the database"""
@@ -103,6 +106,7 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(found_order.postal_code, order.postal_code)
         self.assertEqual(found_order.shipping_price, order.shipping_price)
         self.assertEqual(found_order.date_created, order.date_created)
+        self.assertEqual(found_order.status, order.status)
         self.assertEqual(found_order.items, [])
 
 
@@ -172,6 +176,7 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(serial_order["state"], order.state)
         self.assertEqual(serial_order["postal_code"], order.postal_code)
         self.assertEqual(serial_order["date_created"], str(order.date_created))
+        self.assertEqual(serial_order["status"], str(order.status))
         self.assertEqual(len(serial_order["items"]), 1)
         items = serial_order["items"]
         self.assertEqual(items[0]["id"], item.id)
@@ -193,7 +198,7 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(new_order.state, order.state)
         self.assertEqual(new_order.postal_code, order.postal_code)
         self.assertEqual(new_order.date_created, order.date_created)
-        self.assertEqual(new_order.date_created, order.date_created)
+        self.assertEqual(new_order.status, order.status)
 
     def test_deserialize_with_key_error(self):
         """It should not Deserialize an order with a KeyError"""
