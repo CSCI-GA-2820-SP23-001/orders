@@ -142,6 +142,21 @@ class TestOrder(unittest.TestCase):
         order.delete()
         orders = Order.all()
         self.assertEqual(len(orders), 0)
+    
+    def test_cancel_order(self):
+        """It should change status of order to Cancelled"""
+        orders = Order.all()
+        self.assertEqual(orders, [])
+        order = OrderFactory()
+        order.create()
+        # Assert that it was assigned an id and shows up in the database with status Cancelled
+        self.assertIsNotNone(order.id)
+        orders = Order.all()
+        self.assertEqual(len(orders), 1)
+        order = orders[0]
+        order.cancel()
+        orders = Order.all()
+        self.assertEqual(order.status, "Cancelled")
 
     def test_list_all_orders(self):
         """It should List all orders in the database"""

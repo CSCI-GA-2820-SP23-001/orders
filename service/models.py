@@ -156,7 +156,7 @@ class Order(db.Model, PersistentBase):
     postal_code = db.Column(db.String(16))
     shipping_price = db.Column(db.Float)
     date_created = db.Column(db.Date(), nullable=False, default=date.today())
-    status = db.Column(db.String(64))
+    status = db.Column(db.String(64), nullable=True)
     items = db.relationship("Item", backref="order", passive_deletes=True)
 
     def __repr__(self):
