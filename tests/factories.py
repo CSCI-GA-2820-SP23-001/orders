@@ -38,7 +38,7 @@ class OrderFactory(factory.Factory):
     postal_code = factory.Faker("postalcode")
     shipping_price = round(random.uniform(1.00, 100.00), 2)
     date_created = FuzzyDate(date(2008, 1, 1))
-    status = factory.faker("status")
+    status = factory.Faker("status")
     # the many side of relationships can be a little wonky in factory boy:
     # https://factoryboy.readthedocs.io/en/latest/recipes.html#simple-many-to-many-relationship
 
