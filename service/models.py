@@ -7,6 +7,8 @@ import logging
 from flask_sqlalchemy import SQLAlchemy
 from datetime import date
 from abc import abstractmethod
+from sqlalchemy import Enum
+from service.common import status
 
 logger = logging.getLogger("flask.app")
 
@@ -156,7 +158,7 @@ class Order(db.Model, PersistentBase):
     postal_code = db.Column(db.String(16))
     shipping_price = db.Column(db.Float)
     date_created = db.Column(db.Date(), nullable=False, default=date.today())
-    status = db.Column(db.String(64), nullable=True)
+    status = db.Column(Enum("Open", "Shipped", "Fulfilled", "Cancelled", name="status_enum"), nullable=False, default="Open") 
     items = db.relationship("Item", backref="order", passive_deletes=True)
 
     def __repr__(self):
