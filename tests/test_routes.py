@@ -213,6 +213,32 @@ class TestOrderService(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
     ######################################################################
+    #  TESTS FOR CANCEL ORDER
+    ######################################################################
+   
+    def test_cancel_an_order(self):
+        """It should Cancel an order"""
+        orders = self._create_orders(10)
+        open_orders = [order for order in orders if order.status =="Open"]
+        order = open_orders[0]
+        response = self.client.put(f"{BASE_URL}/{order.id}/cancel")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.get(f"{BASE_URL}/{order.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        logging.debug("Response data: %s", data)
+        self.assertEqual(data["status"], "Cancelled")
+    
+    def test_cancel_order_not_open(self):
+        """It should not Cancel an order that is no longer open"""
+        orders = self._create_orders(10)
+        open_orders = [order for order in orders if order.status == "Shipped"]
+        order = open_orders[0]
+        response = self.client.put(f"{BASE_URL}/{order.id}/cancel")
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+
+
+    ######################################################################
     #  TESTS FOR CREATE ITEM
     ######################################################################
 
