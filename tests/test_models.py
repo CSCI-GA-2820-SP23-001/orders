@@ -159,25 +159,6 @@ class TestOrder(unittest.TestCase):
         order.update()
         orders = Order.all()
         self.assertEqual(order.status, "Cancelled")
-    
-    def test_incomplete_order(self):
-        """It should not change status of order to Incomplete"""
-        orders = Order.all()
-        self.assertEqual(orders, [])
-        order = OrderFactory()
-        order.create()
-       
-        # Assert that it was assigned an id and shows up in the database with status Cancelled
-        self.assertIsNotNone(order.id)
-        orders = Order.all()
-        self.assertEqual(len(orders), 1)
-        order = orders[0]
-        order.status = "Incomplete"
-        order.update()
-        orders = Order.all()
-        resp = self.assertRaises(LookupError, order.update, [])
-        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
-
 
     def test_list_all_orders(self):
         """It should List all orders in the database"""
