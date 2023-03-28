@@ -18,7 +18,7 @@ Test Factory to make fake objects for testing
 from datetime import date
 import random
 import factory
-from factory.fuzzy import FuzzyDate
+from factory.fuzzy import FuzzyChoice, FuzzyDate
 from service.models import Order, Item
 
 
@@ -38,6 +38,7 @@ class OrderFactory(factory.Factory):
     postal_code = factory.Faker("postalcode")
     shipping_price = round(random.uniform(1.00, 100.00), 2)
     date_created = FuzzyDate(date(2008, 1, 1))
+    status =  FuzzyChoice(choices=["Open", "Shipped", "Cancelled", "Fulfilled"])
     # the many side of relationships can be a little wonky in factory boy:
     # https://factoryboy.readthedocs.io/en/latest/recipes.html#simple-many-to-many-relationship
 
