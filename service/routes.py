@@ -148,6 +148,25 @@ def delete_orders(order_id):
 
     return make_response("", status.HTTP_204_NO_CONTENT)
 
+######################################################################
+# CANCEL AN ORDER
+######################################################################
+@app.route("/orders/<int:order_id>/cancel", methods=["PUT"])
+def cancel_order(order_id):
+    """Canceling an order changes its status to Cancelled"""
+    order = Order.find(order_id)
+    if not order:
+        abort(status.HTTP_404_NOT_FOUND, f"Order with id '{order_id}' was not found.")
+    if not order.status == "Open":
+        abort(
+            status.HTTP_409_CONFLICT,
+            f"Order with id '{order_id}' is already shipped or fulfilled and cannot be cancelled.",
+        )
+    # Set order to Cancelled
+    order.status = "Cancelled"
+    order.update()
+    return order.serialize(), status.HTTP_200_OK
+
 
 # ---------------------------------------------------------------------
 #                ITEMS   M E T H O D S
