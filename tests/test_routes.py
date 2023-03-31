@@ -242,7 +242,7 @@ class TestOrderService(TestCase):
     #  TESTS FOR CREATE ITEM
     ######################################################################
 
-    def test_add_item(self):
+    def test_add_item_to_order(self):
         """It should Add an Item to an Order"""
         order = self._create_orders(1)[0]
         item = ItemFactory()
