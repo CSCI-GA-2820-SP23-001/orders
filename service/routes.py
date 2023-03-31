@@ -17,7 +17,7 @@ from . import app
 ######################################################################
 @app.route("/")
 def index():
-    """ Root URL response """
+    """Root URL response"""
     return (
         "Reminder: return some useful information in json format about the service here",
         status.HTTP_200_OK,
@@ -31,6 +31,7 @@ def index():
 ######################################################################
 # CREATE A NEW ORDER
 ######################################################################
+
 
 @app.route("/orders", methods=["POST"])
 def create_order():
@@ -59,6 +60,7 @@ def create_order():
 # READ AN ORDER
 ######################################################################
 
+
 @app.route("/orders/<int:order_id>", methods=["GET"])
 def get_orders(order_id):
     """
@@ -82,6 +84,7 @@ def get_orders(order_id):
 # LIST ALL ORDERS
 ######################################################################
 
+
 @app.route("/orders", methods=["GET"])
 def list_orders():
     """Returns all of the Orders"""
@@ -100,6 +103,7 @@ def list_orders():
 
     return make_response(jsonify(results), status.HTTP_200_OK)
 
+
 ######################################################################
 # UPDATE AN EXISTING ORDER
 ######################################################################
@@ -117,9 +121,7 @@ def update_orders(order_id):
     # See if the order exists and abort if it doesn't
     order = Order.find(order_id)
     if not order:
-        abort(
-            status.HTTP_404_NOT_FOUND, f"Order with id '{order_id}' was not found."
-        )
+        abort(status.HTTP_404_NOT_FOUND, f"Order with id '{order_id}' was not found.")
 
     # Update from the json in the body of the request
     order.deserialize(request.get_json())
@@ -127,6 +129,7 @@ def update_orders(order_id):
     order.update()
 
     return make_response(jsonify(order.serialize()), status.HTTP_200_OK)
+
 
 ######################################################################
 # DELETE AN EXISTING ORDER
@@ -147,6 +150,7 @@ def delete_orders(order_id):
         order.delete()
 
     return make_response("", status.HTTP_204_NO_CONTENT)
+
 
 ######################################################################
 # CANCEL AN ORDER
@@ -176,14 +180,14 @@ def cancel_order(order_id):
 # CREATE/ADD AN ITEM TO AN ORDER
 ######################################################################
 
+
 @app.route("/orders/<int:order_id>/items", methods=["POST"])
 def create_items(order_id):
     """
     Create an Item on an Order
     This endpoint will add an item to an order
     """
-    app.logger.info(
-        "Request to create an Item for Order with id: %s", order_id)
+    app.logger.info("Request to create an Item for Order with id: %s", order_id)
     check_content_type("application/json")
 
     # See if the order exists and abort if it doesn't
@@ -207,9 +211,11 @@ def create_items(order_id):
 
     return make_response(jsonify(message), status.HTTP_201_CREATED)
 
+
 ######################################################################
 # LIST ORDER ITEMS
 ######################################################################
+
 
 @app.route("/orders/<int:order_id>/items", methods=["GET"])
 def list_items(order_id):
@@ -229,6 +235,7 @@ def list_items(order_id):
 
     return make_response(jsonify(results), status.HTTP_200_OK)
 
+
 ######################################################################
 # RETRIEVE AN ITEM FROM AN ORDER
 ######################################################################
@@ -241,8 +248,7 @@ def get_items(order_id, item_id):
     This endpoint returns just an address
     """
     app.logger.info(
-        "Request to retrieve Address %s for Account id: %s", (
-            item_id, order_id)
+        "Request to retrieve Address %s for Account id: %s", (item_id, order_id)
     )
 
     # See if the address exists and abort if it doesn't
@@ -255,6 +261,7 @@ def get_items(order_id, item_id):
 
     return make_response(jsonify(item.serialize()), status.HTTP_200_OK)
 
+
 ######################################################################
 # UPDATE AN ORDER ITEM
 ######################################################################
@@ -266,9 +273,7 @@ def update_items(order_id, item_id):
     Update an Item
     This endpoint will update an Item based the body that is posted
     """
-    app.logger.info(
-        "Request to update Item %s for Order id: %s", (item_id, order_id)
-    )
+    app.logger.info("Request to update Item %s for Order id: %s", (item_id, order_id))
     check_content_type("application/json")
 
     # See if the item exists and abort if it doesn't
@@ -291,15 +296,14 @@ def update_items(order_id, item_id):
 # DELETE AN ORDER ITEM
 ######################################################################
 
+
 @app.route("/orders/<int:order_id>/items/<int:item_id>", methods=["DELETE"])
 def delete_items(order_id, item_id):
     """
     Delete an Order Item
     This endpoint will delete an item based the id specified in the path
     """
-    app.logger.info(
-        "Request to delete item %s for order id: %s", (order_id, item_id)
-    )
+    app.logger.info("Request to delete item %s for order id: %s", (order_id, item_id))
 
     # See if the item exists and delete it if it does
     item = Item.find(item_id)
@@ -312,6 +316,7 @@ def delete_items(order_id, item_id):
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
+
 
 def check_content_type(media_type):
     """Checks that the media type is correct"""

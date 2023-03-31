@@ -22,7 +22,7 @@ def init_db(app):
 
 
 class DataValidationError(Exception):
-    """ Used for an data validation errors when deserializing """
+    """Used for an data validation errors when deserializing"""
 
 
 ######################################################################
@@ -66,7 +66,7 @@ class PersistentBase:
 
     @classmethod
     def init_db(cls, app):
-        """ Initializes the database session """
+        """Initializes the database session"""
         logger.info("Initializing database")
         cls.app = app
         # This is where we initialize SQLAlchemy from the Flask app
@@ -97,8 +97,9 @@ class Item(db.Model, PersistentBase):
 
     # Table Schema
     id = db.Column(db.Integer, primary_key=True)
-    order_id = db.Column(db.Integer, db.ForeignKey(
-        "order.id", ondelete="CASCADE"), nullable=False)
+    order_id = db.Column(
+        db.Integer, db.ForeignKey("order.id", ondelete="CASCADE"), nullable=False
+    )
     item_price = db.Column(db.Float)
     sku = db.Column(db.Integer)
 
@@ -114,7 +115,7 @@ class Item(db.Model, PersistentBase):
             "id": self.id,
             "order_id": self.order_id,
             "item_price": self.item_price,
-            "sku": self.sku
+            "sku": self.sku,
         }
 
     def deserialize(self, data: dict) -> None:
@@ -130,7 +131,8 @@ class Item(db.Model, PersistentBase):
             self.sku = data["sku"]
         except KeyError as error:
             raise DataValidationError(
-                "Invalid Item: missing " + error.args[0]) from error
+                "Invalid Item: missing " + error.args[0]
+            ) from error
         except TypeError as error:
             raise DataValidationError(
                 "Invalid Item: body of request contained "
@@ -158,7 +160,11 @@ class Order(db.Model, PersistentBase):
     postal_code = db.Column(db.String(16))
     shipping_price = db.Column(db.Float)
     date_created = db.Column(db.Date(), nullable=False, default=date.today())
-    status = db.Column(Enum("Open", "Shipped", "Fulfilled", "Cancelled", name="status_enum"), nullable=False, default="Open") 
+    status = db.Column(
+        Enum("Open", "Shipped", "Fulfilled", "Cancelled", name="status_enum"),
+        nullable=False,
+        default="Open",
+    )
     items = db.relationship("Item", backref="order", passive_deletes=True)
 
     def __repr__(self):
@@ -176,7 +182,7 @@ class Order(db.Model, PersistentBase):
             "shipping_price": self.shipping_price,
             "date_created": self.date_created.isoformat(),
             "status": self.status,
-            "items": []
+            "items": [],
         }
         for item in self.items:
             order["items"].append(item.serialize())
@@ -206,7 +212,8 @@ class Order(db.Model, PersistentBase):
                 self.items.append(item)
         except KeyError as error:
             raise DataValidationError(
-                "Invalid Order: missing " + error.args[0]) from error
+                "Invalid Order: missing " + error.args[0]
+            ) from error
         except TypeError as error:
             raise DataValidationError(
                 "Invalid Order: body of request contained "
