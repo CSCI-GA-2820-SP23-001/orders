@@ -226,8 +226,23 @@ def list_items(order_id):
 
     # Get the items for the account
     results = [item.serialize() for item in order.items]
+    
+    #query string from the URL that filters the results by USER ID
+    
+    app.logger.info("Request listing orders")
+	#TODO: how is parameter user_id passed?
+	args = request.args
+	user_id = args.get("user_id", type=int)
+	if user_id is None:
+		abort(
+			status.HTTP_401_UNAUTHORIZED,
+			"Unauthorized user for unknown user_id.",
+		)
+	
+	orders = Order.find_by_user_id(user_id)
+	return make_response(jsonify([order.serialize() for order in orders]), status.HTTP_200_OK)
 
-    return make_response(jsonify(results), status.HTTP_200_OK)
+
 
 ######################################################################
 # RETRIEVE AN ITEM FROM AN ORDER
