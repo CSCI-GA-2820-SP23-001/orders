@@ -48,10 +48,10 @@ def create_order():
 
     # Create a message to return
     message = order.serialize()
-    # location_url = url_for("get_order", order_id=order.id, _external=True)
+    location_url = url_for("get_orders", order_id=order.id, _external=True)
 
     return make_response(
-        jsonify(message), status.HTTP_201_CREATED, {"Location": "TODO"}
+        jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
     )
 
 
