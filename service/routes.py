@@ -4,16 +4,17 @@ My Service
 Describe what your service does here
 """
 
-from flask import url_for, jsonify, request, make_response, abort
+from flask import url_for, jsonify, request, make_response, abort, Blueprint
 from service.common import status  # HTTP Status Codes
 from service.models import Order, Item
 
+routes_bp = Blueprint("routes", __name__)
 
 
 ######################################################################
 # GET INDEX
 ######################################################################
-@app.route("/")
+@routes_bp.route("/")
 def index():
     """Root URL response"""
     return (
@@ -35,7 +36,7 @@ def index():
 ######################################################################
 
 
-@app.route("/orders", methods=["POST"])
+@routes_bp.route("/orders", methods=["POST"])
 def create_order():
     """
     Creates an Order
@@ -63,7 +64,7 @@ def create_order():
 ######################################################################
 
 
-@app.route("/orders/<int:order_id>", methods=["GET"])
+@routes_bp.route("/orders/<int:order_id>", methods=["GET"])
 def get_orders(order_id):
     """
     Retrieve a single Order
@@ -87,7 +88,7 @@ def get_orders(order_id):
 ######################################################################
 
 
-@app.route("/orders", methods=["GET"])
+@routes_bp.route("/orders", methods=["GET"])
 def list_orders():
     """Returns all of the Orders"""
     app.logger.info("Request for Order list")
@@ -111,7 +112,7 @@ def list_orders():
 ######################################################################
 
 
-@app.route("/orders/<int:order_id>", methods=["PUT"])
+@routes_bp.route("/orders/<int:order_id>", methods=["PUT"])
 def update_orders(order_id):
     """
     Update an Order
@@ -139,7 +140,7 @@ def update_orders(order_id):
 ######################################################################
 
 
-@app.route("/orders/<int:order_id>", methods=["DELETE"])
+@routes_bp.route("/orders/<int:order_id>", methods=["DELETE"])
 def delete_orders(order_id):
     """
     Delete an Order
@@ -158,7 +159,7 @@ def delete_orders(order_id):
 ######################################################################
 # CANCEL AN ORDER
 ######################################################################
-@app.route("/orders/<int:order_id>/cancel", methods=["PUT"])
+@routes_bp.route("/orders/<int:order_id>/cancel", methods=["PUT"])
 def cancel_order(order_id):
     """Canceling an order changes its status to Cancelled"""
     order = Order.find(order_id)
@@ -185,7 +186,7 @@ def cancel_order(order_id):
 ######################################################################
 
 
-@app.route("/orders/<int:order_id>/items", methods=["POST"])
+@routes_bp.route("/orders/<int:order_id>/items", methods=["POST"])
 def create_items(order_id):
     """
     Create an Item on an Order
@@ -222,7 +223,7 @@ def create_items(order_id):
 ######################################################################
 
 
-@app.route("/orders/<int:order_id>/items", methods=["GET"])
+@routes_bp.route("/orders/<int:order_id>/items", methods=["GET"])
 def list_items(order_id):
     """Returns all of the Items for an Order"""
     app.logger.info("Request for all Items for an Order with id: %s", order_id)
@@ -246,7 +247,7 @@ def list_items(order_id):
 ######################################################################
 
 
-@app.route("/orders/<int:order_id>/items/<int:item_id>", methods=["GET"])
+@routes_bp.route("/orders/<int:order_id>/items/<int:item_id>", methods=["GET"])
 def get_items(order_id, item_id):
     """
     Get an Address
@@ -273,7 +274,7 @@ def get_items(order_id, item_id):
 ######################################################################
 
 
-@app.route("/orders/<int:order_id>/items/<int:item_id>", methods=["PUT"])
+@routes_bp.route("/orders/<int:order_id>/items/<int:item_id>", methods=["PUT"])
 def update_items(order_id, item_id):
     """
     Update an Item
@@ -304,7 +305,7 @@ def update_items(order_id, item_id):
 ######################################################################
 
 
-@app.route("/orders/<int:order_id>/items/<int:item_id>", methods=["DELETE"])
+@routes_bp.route("/orders/<int:order_id>/items/<int:item_id>", methods=["DELETE"])
 def delete_items(order_id, item_id):
     """
     Delete an Order Item

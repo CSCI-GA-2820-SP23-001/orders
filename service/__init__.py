@@ -8,10 +8,12 @@ import sys
 from flask import Flask
 from service import config
 from service.common import log_handlers
+from service.routes import routes_bp
 
 # Create Flask application
 app = Flask(__name__)
 app.config.from_object(config)
+app.register_blueprint(routes_bp)
 
 # Dependencies require we import the routes AFTER the Flask app is created
 # pylint: disable=wrong-import-position, wrong-import-order
