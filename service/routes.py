@@ -280,8 +280,7 @@ def update_items(order_id, item_id):
     Update an Item
     This endpoint will update an Item based the body that is posted
     """
-    current_app.logger.info("Request to update Item %s for Order id: %s",
-                    (item_id, order_id))
+    current_app.logger.info("Request to retrieve Address %s for Account id: %s", item_id, order_id)
     check_content_type("application/json")
 
     # See if the item exists and abort if it doesn't
@@ -311,8 +310,7 @@ def delete_items(order_id, item_id):
     Delete an Order Item
     This endpoint will delete an item based the id specified in the path
     """
-    current_app.logger.info("Request to delete item %s for order id: %s",
-                    (order_id, item_id))
+    current_app.logger.info("Request to retrieve Address %s for Account id: %s", item_id, order_id)
 
     # See if the item exists and delete it if it does
     item = Item.find(item_id)
