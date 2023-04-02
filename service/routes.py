@@ -8,8 +8,6 @@ from flask import url_for, jsonify, request, make_response, abort
 from service.common import status  # HTTP Status Codes
 from service.models import Order, Item
 
-# Import Flask application
-from service import app
 
 
 ######################################################################
