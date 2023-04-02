@@ -9,7 +9,7 @@ from service.common import status  # HTTP Status Codes
 from service.models import Order, Item
 
 # Import Flask application
-from . import app
+from service import app
 
 
 ######################################################################

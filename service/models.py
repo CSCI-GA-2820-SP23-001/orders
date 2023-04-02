@@ -4,10 +4,10 @@ Models for Order
 All of the models are stored in this module
 """
 import logging
-from flask_sqlalchemy import SQLAlchemy
 from datetime import date
 from abc import abstractmethod
 from sqlalchemy import Enum
+from flask_sqlalchemy import SQLAlchemy
 
 logger = logging.getLogger("flask.app")
 
@@ -143,6 +143,7 @@ class Item(db.Model, PersistentBase):
 ######################################################################
 #  O R D E R   M O D E L
 ######################################################################
+# pylint: disable=too-many-instance-attributes
 class Order(db.Model, PersistentBase):
     """
     Class that represents an Order
