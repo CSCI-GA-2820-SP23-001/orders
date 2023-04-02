@@ -436,4 +436,3 @@ class TestOrderService(TestCase):
             order.id = new_order["id"]
             orders.append(order)
         return orders
-
