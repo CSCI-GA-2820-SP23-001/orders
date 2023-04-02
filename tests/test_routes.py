@@ -215,11 +215,11 @@ class TestOrderService(TestCase):
     ######################################################################
     #  TESTS FOR CANCEL ORDER
     ######################################################################
-   
+
     def test_cancel_an_order(self):
         """It should Cancel an order"""
         orders = self._create_orders(10)
-        open_orders = [order for order in orders if order.status =="Open"]
+        open_orders = [order for order in orders if order.status == "Open"]
         order = open_orders[0]
         response = self.client.put(f"{BASE_URL}/{order.id}/cancel")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -228,7 +228,7 @@ class TestOrderService(TestCase):
         data = response.get_json()
         logging.debug("Response data: %s", data)
         self.assertEqual(data["status"], "Cancelled")
-    
+
     def test_cancel_order_not_open(self):
         """It should not Cancel an order that is no longer open"""
         orders = self._create_orders(10)
@@ -236,7 +236,6 @@ class TestOrderService(TestCase):
         order = open_orders[0]
         response = self.client.put(f"{BASE_URL}/{order.id}/cancel")
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
-
 
     ######################################################################
     #  TESTS FOR CREATE ITEM
@@ -257,7 +256,6 @@ class TestOrderService(TestCase):
         self.assertEqual(data["order_id"], order.id)
         self.assertEqual(data["item_price"], item.item_price)
         self.assertEqual(data["sku"], item.sku)
-
 
     ######################################################################
     #  TESTS FOR READ ITEM

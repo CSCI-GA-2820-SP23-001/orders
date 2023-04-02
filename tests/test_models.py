@@ -93,7 +93,7 @@ class TestOrder(unittest.TestCase):
 
         # Read it back
         found_order = Order.find(order.id)
-        # pdb.set_trace() 
+        # pdb.set_trace()
 
         print("FOUND ORDER HERE")
         print(found_order)
@@ -109,8 +109,6 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(found_order.date_created, order.date_created)
         self.assertEqual(found_order.status, order.status)
         self.assertEqual(found_order.items, [])
-
-
 
     def test_update_order(self):
         """It should Update an order"""
@@ -143,7 +141,7 @@ class TestOrder(unittest.TestCase):
         order.delete()
         orders = Order.all()
         self.assertEqual(len(orders), 0)
-    
+
     def test_cancel_order(self):
         """It should change status of order to Cancelled"""
         orders = Order.all()
@@ -199,7 +197,6 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(items[0]["id"], item.id)
         self.assertEqual(items[0]["order_id"], item.order_id)
         self.assertEqual(items[0]["sku"], item.sku)
-        
 
     def test_deserialize_an_order(self):
         """It should Deserialize an order"""
