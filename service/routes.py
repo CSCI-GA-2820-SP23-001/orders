@@ -85,7 +85,7 @@ def get_orders(order_id):
 ######################################################################
 
 
-@app.route("/orders", methods=["GET"])
+"""@app.route("/orders", methods=["GET"])
 def list_orders():
     """Returns all of the Orders"""
     app.logger.info("Request for Order list")
@@ -97,6 +97,34 @@ def list_orders():
         orders = Order.find_by_name(name)
     else:
         orders = Order.all()
+
+    # Return as an array of dictionaries
+    results = [order.serialize() for order in orders]
+
+    return make_response(jsonify(results), status.HTTP_200_OK)"""
+
+@app.route("/orders", methods=["GET"])
+def list_orders():
+    """Returns all of the Orders"""
+    app.logger.info("Request for Order list By Status")
+        
+    # Process the query string if any by name and status
+    name = request.args.get("name")
+    status = request.args.get("status")  
+        
+    if name and status:
+        orders = Order.find_by_name_and_status(name, status)
+    elif name:
+        orders = Order.find_by_name(name)
+    elif status:
+        orders = Order.find_by_status(status)
+    else:
+        orders = Order.all()
+        """
+        abort(
+		status.HTTP_401_UNAUTHORIZED,nos
+		"Unauthorized user for unknown user_id.")
+        """
 
     # Return as an array of dictionaries
     results = [order.serialize() for order in orders]
