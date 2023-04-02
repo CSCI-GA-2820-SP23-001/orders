@@ -8,7 +8,6 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import date
 from abc import abstractmethod
 from sqlalchemy import Enum
-from service.common import status
 
 logger = logging.getLogger("flask.app")
 

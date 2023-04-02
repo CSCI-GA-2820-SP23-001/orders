@@ -243,7 +243,7 @@ class TestOrderService(TestCase):
     ######################################################################
 
     def test_add_item(self):
-        """It should Add an Item to an Order"""
+        """It should Add an item to an order"""
         order = self._create_orders(1)[0]
         item = ItemFactory()
         resp = self.client.post(
@@ -255,9 +255,9 @@ class TestOrderService(TestCase):
         data = resp.get_json()
         logging.debug(data)
         self.assertEqual(data["order_id"], order.id)
-        self.assertEqual(data["id"], item.id)
         self.assertEqual(data["item_price"], item.item_price)
         self.assertEqual(data["sku"], item.sku)
+
 
     ######################################################################
     #  TESTS FOR READ ITEM
@@ -463,23 +463,3 @@ class TestOrderService(TestCase):
             order.id = new_order["id"]
             orders.append(order)
         return orders
-
-    ######################################################################
-    #  I T E M  M E T H O D S
-    ######################################################################
-
-    def test_add_item(self):
-        """It should Add an item to an order"""
-        order = self._create_orders(1)[0]
-        item = ItemFactory()
-        resp = self.client.post(
-            f"{BASE_URL}/{order.id}/items",
-            json=item.serialize(),
-            content_type="application/json",
-        )
-        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-        data = resp.get_json()
-        logging.debug(data)
-        self.assertEqual(data["order_id"], order.id)
-        self.assertEqual(data["item_price"], item.item_price)
-        self.assertEqual(data["sku"], item.sku)
