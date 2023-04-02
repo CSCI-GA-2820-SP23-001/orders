@@ -211,6 +211,48 @@ class TestOrderService(TestCase):
         new_order4_name = "fake name"
         resp = self.client.get(f"{BASE_URL}/{new_order4_name}")
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+        
+        
+    # Test the list_orders() function with the name query parameter
+    def test_get_orders_by_name_query(self):
+        order1 = OrderFactory(name="Fake Name 1", status="Fake Status 1")
+        #order2 = OrderFactory(name="Fake Name 2", status="Fake Status 2"")
+
+        resp = self.client.get(BASE_URL, query_string=f"name")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        data = resp.json
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]["name"]= "Fake Name 1")
+
+
+    # Test the list_orders() function with the status query parameter
+    def test_get_order_by_status(self):
+        order1 = OrderFactory(name="Fake Name 1", status="Fake Status 1")
+        #order2 = OrderFactory(name="Fake Name 2", status="Fake Status 2"")
+
+        resp = self.client.get(BASE_URL, query_string=f"status")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        data = resp.json
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]["status"]= "Fake Status 1")
+
+
+    # Test the list_orders() function with both name and status query parameters
+    def test_list_orders_with_name_and_status_query_params(self):
+        order1 = OrderFactory(name="Fake name 1", status="fake status 1")
+        #order2 = OrderFactory(name="Fake name 2", status="fake status 2")
+
+        response = self.client.get(BASE_URL, query_string=f"name", query_string=f"status")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        data = response.json
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]["name"], "fake name 1")
+        self.assertEqual(data[0]["status"], "fake status 1")
+  
+  
 
     ######################################################################
     #  TESTS FOR CANCEL ORDER
