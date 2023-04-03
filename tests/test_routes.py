@@ -12,6 +12,8 @@ from tests.factories import ItemFactory, OrderFactory
 from service.common import status  # HTTP Status Codes
 from service.models import db, Order, init_db
 from service.routes import app
+from itertools import cycle
+
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/postgres"
@@ -192,6 +194,50 @@ class TestOrderService(TestCase):
         data = resp.get_json()
         self.assertEqual(data[0]["name"], orders[1].name)
 
+    def test_get_order_by_status(self):
+        """It should Get and Order by a Status"""
+        test_order_1 = OrderFactory(status="Open")
+        resp = self.client.post(BASE_URL, json=test_order_1.serialize())
+        test_order_2 = OrderFactory(status="Open")
+        resp = self.client.post(BASE_URL, json=test_order_2.serialize())
+
+        resp = self.client.get(BASE_URL, query_string="status=Open")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        data = resp.json
+        self.assertEqual(len(data), 2)
+        self.assertEqual(data[0]["status"], "Open")
+
+    def test_get_order_list_by_name_and_status(self):
+        """It should Get a list of Orders filtered by Name and Status"""
+        # Create 4 unique orders with 2 unique names and 2 unique statuses
+        test_order_1 = OrderFactory(name="Order1", status="Open")
+        resp = self.client.post(BASE_URL, json=test_order_1.serialize())
+        test_order_2 = OrderFactory(name="Order1", status="Shipped")
+        resp = self.client.post(BASE_URL, json=test_order_2.serialize())
+        test_order_3 = OrderFactory(name="Order2", status="Open")
+        resp = self.client.post(BASE_URL, json=test_order_3.serialize())
+        test_order_4 = OrderFactory(name="Order2", status="Shipped")
+        resp = self.client.post(BASE_URL, json=test_order_4.serialize())
+
+        # Test filtering by name and status
+        resp = self.client.get(
+            BASE_URL, query_string=f"name={test_order_1.name}&status={test_order_1.status}")
+        self.assertEqual(resp.status_code, 200)
+        data = resp.get_json()
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]["name"], test_order_1.name)
+        self.assertEqual(data[0]["status"], test_order_1.status)
+
+        # Test filtering by another name and status
+        resp = self.client.get(
+            BASE_URL, query_string=f"name={test_order_4.name}&status={test_order_4.status}")
+        self.assertEqual(resp.status_code, 200)
+        data = resp.get_json()
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]["name"], test_order_4.name)
+        self.assertEqual(data[0]["status"], test_order_4.status)
+
     def test_list_nonexistent_order(self):
         """It should not List an Order where ID is not found"""
         test_order = OrderFactory()
@@ -218,7 +264,7 @@ class TestOrderService(TestCase):
 
     def test_cancel_an_order(self):
         """It should Cancel an order"""
-        orders = self._create_orders(20)
+        orders = self._create_orders(4)
         open_orders = [order for order in orders if order.status == "Open"]
         order = open_orders[0]
         response = self.client.put(f"{BASE_URL}/{order.id}/cancel")
@@ -449,8 +495,17 @@ class TestOrderService(TestCase):
     def _create_orders(self, count):
         """Factory method to create orders in bulk"""
         orders = []
+
+        # Define the constant status values
+        status_values = ["Open", "Shipped", "Fulfilled", "Cancelled"]
+        # Create a cycle iterator for status values
+        status_cycle = cycle(status_values)
+
         for _ in range(count):
-            order = OrderFactory()
+            # Get the next status value from the cycle
+            status_value = next(status_cycle)
+            # Pass the status value to the factory
+            order = OrderFactory(status=status_value)
             resp = self.client.post(BASE_URL, json=order.serialize())
             self.assertEqual(
                 resp.status_code,

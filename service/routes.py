@@ -92,13 +92,18 @@ def get_orders(order_id):
 @app.route("/orders", methods=["GET"])
 def list_orders():
     """Returns all of the Orders"""
-    app.logger.info("Request for Order list")
-    orders = []
+    app.logger.info("Request for Order list By Status")
 
-    # Process the query string if any
-    name = request.args.get("name")
-    if name:
-        orders = Order.find_by_name(name)
+    # Process the query string if any by name and status
+    name_query = request.args.get("name")
+    status_query = request.args.get("status")
+
+    if name_query and status_query:
+        orders = Order.find_by_name_and_status(name_query, status_query)
+    elif name_query:
+        orders = Order.find_by_name(name_query)
+    elif status_query:
+        orders = Order.find_by_status(status_query)
     else:
         orders = Order.all()
 
