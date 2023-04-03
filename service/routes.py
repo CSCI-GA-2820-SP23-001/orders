@@ -20,7 +20,7 @@ def index():
     """Root URL response"""
     return jsonify(status=200, message="Welcome to Orders"), status.HTTP_200_OK
 
-
+# delete this txt line 23
 ######################################################################
 #  R E S T   A P I   E N D P O I N T S
 ######################################################################
