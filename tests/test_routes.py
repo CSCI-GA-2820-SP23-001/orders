@@ -199,7 +199,7 @@ class TestOrderService(TestCase):
         test_order_2 = OrderFactory(status="Open")
         resp = self.client.post(BASE_URL, json=test_order_2.serialize())
 
-        resp = self.client.get(BASE_URL, query_string=f"status=Open")
+        resp = self.client.get(BASE_URL, query_string="status=Open")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
         data = resp.json
