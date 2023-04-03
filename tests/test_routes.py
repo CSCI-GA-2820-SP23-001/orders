@@ -12,6 +12,8 @@ from tests.factories import ItemFactory, OrderFactory
 from service.common import status  # HTTP Status Codes
 from service.models import db, Order, init_db
 from service.routes import app
+from itertools import cycle
+
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/postgres"
@@ -262,7 +264,7 @@ class TestOrderService(TestCase):
 
     def test_cancel_an_order(self):
         """It should Cancel an order"""
-        orders = self._create_orders(20)
+        orders = self._create_orders(4)
         open_orders = [order for order in orders if order.status == "Open"]
         order = open_orders[0]
         response = self.client.put(f"{BASE_URL}/{order.id}/cancel")
@@ -493,8 +495,17 @@ class TestOrderService(TestCase):
     def _create_orders(self, count):
         """Factory method to create orders in bulk"""
         orders = []
+
+        # Define the constant status values
+        status_values = ["Open", "Shipped", "Fulfilled", "Cancelled"]
+        # Create a cycle iterator for status values
+        status_cycle = cycle(status_values)
+
         for _ in range(count):
-            order = OrderFactory()
+            # Get the next status value from the cycle
+            status_value = next(status_cycle)
+            # Pass the status value to the factory
+            order = OrderFactory(status=status_value)
             resp = self.client.post(BASE_URL, json=order.serialize())
             self.assertEqual(
                 resp.status_code,
