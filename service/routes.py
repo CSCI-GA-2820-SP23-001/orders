@@ -4,7 +4,7 @@ My Service
 Describe what your service does here
 """
 
-from flask import url_for, jsonify, request, make_response, abort 
+from flask import url_for, jsonify, request, make_response, abort
 from service.common import status  # HTTP Status Codes
 from service.models import Order, Item
 
@@ -85,46 +85,23 @@ def get_orders(order_id):
 ######################################################################
 
 
-"""@app.route("/orders", methods=["GET"])
-def list_orders():
-    """Returns all of the Orders"""
-    app.logger.info("Request for Order list")
-    orders = []
-
-    # Process the query string if any
-    name = request.args.get("name")
-    if name:
-        orders = Order.find_by_name(name)
-    else:
-        orders = Order.all()
-
-    # Return as an array of dictionaries
-    results = [order.serialize() for order in orders]
-
-    return make_response(jsonify(results), status.HTTP_200_OK)"""
-
 @app.route("/orders", methods=["GET"])
 def list_orders():
     """Returns all of the Orders"""
     app.logger.info("Request for Order list By Status")
-        
+
     # Process the query string if any by name and status
-    name = request.args.get("name")
-    status = request.args.get("status")  
-        
-    if name and status:
-        orders = Order.find_by_name_and_status(name, status)
-    elif name:
-        orders = Order.find_by_name(name)
-    elif status:
-        orders = Order.find_by_status(status)
+    name_query = request.args.get("name")
+    status_query = request.args.get("status")
+
+    if name_query and status_query:
+        orders = Order.find_by_name_and_status(name_query, status_query)
+    elif name_query:
+        orders = Order.find_by_name(name_query)
+    elif status_query:
+        orders = Order.find_by_status(status_query)
     else:
         orders = Order.all()
-        """
-        abort(
-		status.HTTP_401_UNAUTHORIZED,nos
-		"Unauthorized user for unknown user_id.")
-        """
 
     # Return as an array of dictionaries
     results = [order.serialize() for order in orders]
@@ -149,7 +126,8 @@ def update_orders(order_id):
     # See if the order exists and abort if it doesn't
     order = Order.find(order_id)
     if not order:
-        abort(status.HTTP_404_NOT_FOUND, f"Order with id '{order_id}' was not found.")
+        abort(status.HTTP_404_NOT_FOUND,
+              f"Order with id '{order_id}' was not found.")
 
     # Update from the json in the body of the request
     order.deserialize(request.get_json())
@@ -188,7 +166,8 @@ def cancel_order(order_id):
     """Canceling an order changes its status to Cancelled"""
     order = Order.find(order_id)
     if not order:
-        abort(status.HTTP_404_NOT_FOUND, f"Order with id '{order_id}' was not found.")
+        abort(status.HTTP_404_NOT_FOUND,
+              f"Order with id '{order_id}' was not found.")
     if not order.status == "Open":
         abort(
             status.HTTP_409_CONFLICT,
@@ -215,7 +194,8 @@ def create_items(order_id):
     Create an Item on an Order
     This endpoint will add an item to an order
     """
-    app.logger.info("Request to create an Item for Order with id: %s", order_id)
+    app.logger.info(
+        "Request to create an Item for Order with id: %s", order_id)
     check_content_type("application/json")
 
     # See if the order exists and abort if it doesn't
@@ -276,7 +256,8 @@ def get_items(order_id, item_id):
     This endpoint returns just an address
     """
     app.logger.info(
-        "Request to retrieve Address %s for Account id: %s", (item_id, order_id)
+        "Request to retrieve Address %s for Account id: %s", (
+            item_id, order_id)
     )
 
     # See if the address exists and abort if it doesn't
@@ -301,7 +282,8 @@ def update_items(order_id, item_id):
     Update an Item
     This endpoint will update an Item based the body that is posted
     """
-    app.logger.info("Request to update Item %s for Order id: %s", (item_id, order_id))
+    app.logger.info("Request to update Item %s for Order id: %s",
+                    (item_id, order_id))
     check_content_type("application/json")
 
     # See if the item exists and abort if it doesn't
@@ -331,7 +313,8 @@ def delete_items(order_id, item_id):
     Delete an Order Item
     This endpoint will delete an item based the id specified in the path
     """
-    app.logger.info("Request to delete item %s for order id: %s", (order_id, item_id))
+    app.logger.info("Request to delete item %s for order id: %s",
+                    (order_id, item_id))
 
     # See if the item exists and delete it if it does
     item = Item.find(item_id)

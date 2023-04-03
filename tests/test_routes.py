@@ -192,6 +192,50 @@ class TestOrderService(TestCase):
         data = resp.get_json()
         self.assertEqual(data[0]["name"], orders[1].name)
 
+    def test_get_order_by_status(self):
+        """It should Get and Order by a Status"""
+        test_order_1 = OrderFactory(status="Open")
+        resp = self.client.post(BASE_URL, json=test_order_1.serialize())
+        test_order_2 = OrderFactory(status="Open")
+        resp = self.client.post(BASE_URL, json=test_order_2.serialize())
+
+        resp = self.client.get(BASE_URL, query_string=f"status=Open")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        data = resp.json
+        self.assertEqual(len(data), 2)
+        self.assertEqual(data[0]["status"], "Open")
+
+    def test_get_order_list_by_name_and_status(self):
+        """It should Get a list of Orders filtered by Name and Status"""
+        # Create 4 unique orders with 2 unique names and 2 unique statuses
+        test_order_1 = OrderFactory(name="Order1", status="Open")
+        resp = self.client.post(BASE_URL, json=test_order_1.serialize())
+        test_order_2 = OrderFactory(name="Order1", status="Shipped")
+        resp = self.client.post(BASE_URL, json=test_order_2.serialize())
+        test_order_3 = OrderFactory(name="Order2", status="Open")
+        resp = self.client.post(BASE_URL, json=test_order_3.serialize())
+        test_order_4 = OrderFactory(name="Order2", status="Shipped")
+        resp = self.client.post(BASE_URL, json=test_order_4.serialize())
+
+        # Test filtering by name and status
+        resp = self.client.get(
+            BASE_URL, query_string=f"name={test_order_1.name}&status={test_order_1.status}")
+        self.assertEqual(resp.status_code, 200)
+        data = resp.get_json()
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]["name"], test_order_1.name)
+        self.assertEqual(data[0]["status"], test_order_1.status)
+
+        # Test filtering by another name and status
+        resp = self.client.get(
+            BASE_URL, query_string=f"name={test_order_4.name}&status={test_order_4.status}")
+        self.assertEqual(resp.status_code, 200)
+        data = resp.get_json()
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]["name"], test_order_4.name)
+        self.assertEqual(data[0]["status"], test_order_4.status)
+
     def test_list_nonexistent_order(self):
         """It should not List an Order where ID is not found"""
         test_order = OrderFactory()
@@ -211,57 +255,15 @@ class TestOrderService(TestCase):
         new_order4_name = "fake name"
         resp = self.client.get(f"{BASE_URL}/{new_order4_name}")
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
-        
-        
-    # Test the list_orders() function with the name query parameter
-    def test_get_orders_by_name_query(self):
-        order1 = OrderFactory(name="Fake Name 1", status="Fake Status 1")
-        #order2 = OrderFactory(name="Fake Name 2", status="Fake Status 2"")
-
-        resp = self.client.get(BASE_URL, query_string=f"name")
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-        data = resp.json
-        self.assertEqual(len(data), 1)
-        self.assertEqual(data[0]["name"]= "Fake Name 1")
-
-
-    # Test the list_orders() function with the status query parameter
-    def test_get_order_by_status(self):
-        order1 = OrderFactory(name="Fake Name 1", status="Fake Status 1")
-        #order2 = OrderFactory(name="Fake Name 2", status="Fake Status 2"")
-
-        resp = self.client.get(BASE_URL, query_string=f"status")
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-        data = resp.json
-        self.assertEqual(len(data), 1)
-        self.assertEqual(data[0]["status"]= "Fake Status 1")
-
-
-    # Test the list_orders() function with both name and status query parameters
-    def test_list_orders_with_name_and_status_query_params(self):
-        order1 = OrderFactory(name="Fake name 1", status="fake status 1")
-        #order2 = OrderFactory(name="Fake name 2", status="fake status 2")
-
-        response = self.client.get(BASE_URL, query_string=f"name", query_string=f"status")
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-        data = response.json
-        self.assertEqual(len(data), 1)
-        self.assertEqual(data[0]["name"], "fake name 1")
-        self.assertEqual(data[0]["status"], "fake status 1")
-  
-  
 
     ######################################################################
     #  TESTS FOR CANCEL ORDER
     ######################################################################
-   
+
     def test_cancel_an_order(self):
         """It should Cancel an order"""
         orders = self._create_orders(10)
-        open_orders = [order for order in orders if order.status =="Open"]
+        open_orders = [order for order in orders if order.status == "Open"]
         order = open_orders[0]
         response = self.client.put(f"{BASE_URL}/{order.id}/cancel")
         self.assertEqual(response.status_code, 200)
@@ -270,7 +272,7 @@ class TestOrderService(TestCase):
         data = response.get_json()
         logging.debug("Response data: %s", data)
         self.assertEqual(data["status"], "Cancelled")
-    
+
     def test_cancel_order_not_open(self):
         """It should not Cancel an order that is no longer open"""
         orders = self._create_orders(10)
@@ -278,7 +280,6 @@ class TestOrderService(TestCase):
         order = open_orders[0]
         response = self.client.put(f"{BASE_URL}/{order.id}/cancel")
         self.assertEqual(response.status_code, 409)
-
 
     ######################################################################
     #  TESTS FOR CREATE ITEM
@@ -299,7 +300,6 @@ class TestOrderService(TestCase):
         self.assertEqual(data["order_id"], order.id)
         self.assertEqual(data["item_price"], item.item_price)
         self.assertEqual(data["sku"], item.sku)
-
 
     ######################################################################
     #  TESTS FOR READ ITEM

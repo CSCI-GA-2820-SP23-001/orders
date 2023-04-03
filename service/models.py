@@ -7,7 +7,7 @@ import logging
 from flask_sqlalchemy import SQLAlchemy
 from datetime import date
 from abc import abstractmethod
-from sqlalchemy import Enum
+from sqlalchemy import Enum, and_
 
 logger = logging.getLogger("flask.app")
 
@@ -229,3 +229,22 @@ class Order(db.Model, PersistentBase):
         """
         logger.info("Processing name query for %s ...", name)
         return cls.query.filter(cls.name == name)
+
+    @classmethod
+    def find_by_status(cls, status):
+        """Returns all Orders with the given status
+
+        Args:
+            status (string): the status of the Orders you want to match
+        """
+        return cls.query.filter(cls.status == status)
+
+    @classmethod
+    def find_by_name_and_status(cls, name, status):
+        """Returns all Orders with the given status and name
+
+        Args:
+            status (string): the status of the Orders you want to match
+            name (string): the name of the Orders you want to match
+        """
+        return cls.query.filter(and_(cls.name == name, cls.status == status))
