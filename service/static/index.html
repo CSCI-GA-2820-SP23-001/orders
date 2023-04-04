@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Order Service</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="static/css/blue_bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="page-header">
+          <h1>Order Service</h1>
+      </div>
+
+      <div class="row">
+        <div class="column col-md-10">
+          <p class='description'>
+            GET <a href="/orders" id = "get_orders">/orders</a> to see all the orders.
+            <br>
+            <!-- would this be the status? -->
+            <!-- GET <a href="/orders?category=dog">/pets?category=dog</a> to see all of the pets in the 'dog' category. -->
+            <br>
+            GET /orders/{id} retrieves an order from the DB using the order ID.
+            <br>
+            PUT /orders/{id} updates an order using an order ID.
+            <br>
+            DELETE /orders/{id} removes an order from the DB using an order ID.
+            <br>
+            POST /orders creates a new order.
+          </p>
+        </div>
+        <div class="column col-md-2">
+          <img src="static/images/OrderAppIcon.png" alt="Order Service" width="150" height="300">
+        </div>
+      </div>
+      <p>Example JSON Data:</p>
+      <!-- Ensure iso format date -->
+      <pre>{"name": "Emilie Pourchet", "street": "10 Orchard St", "city": "New York", "state": "New York", "postal code": "10009"}</pre>
+
+      <!-- FORM -->
+      <form id="create_order" action="/orders" method="post" enctype="application/json">      
+      <div class="col-md-12" id="form_data">
+        <h3>Enter information to Create an order:</h3>
+        <div class="well">
+
+          <div class="form-horizontal">
+
+            <!-- NAME -->
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="name">Name:</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" name="name" id="name" placeholder="Enter your name for the order">
+              </div>
+            </div>
+
+            <!-- STREET -->
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="street">Street:</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" name="street" id="street" placeholder="Enter number and street name for delivery address">
+              </div>
+            </div>
+
+            <!-- CITY -->
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="city">City:</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" name="city" id="city" placeholder="Enter city for delivery address">
+              </div>
+            </div>
+
+            <!-- STATE -->
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="state">State:</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" name="state" id="state" placeholder="Enter state for delivery address">
+              </div>
+            </div>
+
+            <!-- POSTAL CODE -->
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="postal_code">Postal Code:</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" name="postal_code" id="postal_code" placeholder="Enter postal code for delivery address">
+              </div>
+            </div>
+
+
+            <!-- GENDER
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="gender">Gender:</label>
+              <div class="col-sm-10">
+                <select class="form-control" name="gender" id="gender">
+                  <option value="UNKNOWN" selected>Unknown</option>
+                  <option value="MALE">Male</option>
+                  <option value="FEMALE">Female</option>
+                </select>
+              </div>
+            </div> -->
+
+            <!-- SUBMIT BUTTONS -->
+            <div class="form-group">
+              <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-success" id="submit">Create</button>
+              </div>
+            </div>
+
+          </div> <!-- form horizontal -->
+        </div> <!-- end well -->
+      </div> <!-- end Form -->
+      </form>
+
+      <footer>
+        <br><br>
+        <p>&copy; NYU DevOps Company 2022</p>
+      </footer>
+
+    </div> <!-- container -->
+
+  <script type="text/javascript" src = "static/js/bootstrap.min.js"></script>
+
+  </body>
+</html>
