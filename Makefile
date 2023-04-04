@@ -1,4 +1,14 @@
 # These can be overidden with env vars.
+REGISTRY ?= us.icr.io
+NAMESPACE ?= nyu_orders
+IMAGE_NAME ?= orders
+IMAGE_TAG ?= 1.0
+IMAGE ?= $(REGISTRY)/$(NAMESPACE)/$(IMAGE_NAME):$(IMAGE_TAG)
+# PLATFORM ?= "linux/amd64,linux/arm64"
+PLATFORM ?= "linux/amd64"
+CLUSTER ?= nyu-devops
+
+# These can be overidden with env vars.
 CLUSTER ?= nyu-devops
 
 .PHONY: help
@@ -65,3 +75,38 @@ deploy: ## Deploy the service on local Kubernetes
 	$(info Deploying service locally...)
 	kubectl apply -f deploy/
 
+############################################################
+# COMMANDS FOR DEPLOYING THE IMAGE
+############################################################
+
+##@ Deployment
+
+.PHONY: push
+image-push: ## Push to a Docker image registry
+	$(info Logging into IBM Cloud cluster $(CLUSTER)...)
+	docker push $(IMAGE)
+
+
+############################################################
+# COMMANDS FOR BUILDING THE IMAGE
+############################################################
+
+##@ Docker Build
+
+.PHONY: init
+init: export DOCKER_BUILDKIT=1
+init:	## Creates the buildx instance
+	$(info Initializing Builder...)
+	docker buildx create --use --name=qemu
+	docker buildx inspect --bootstrap
+
+.PHONY: build
+build:	## Build all of the project Docker images
+	$(info Building $(IMAGE) for $(PLATFORM)...)
+	docker buildx build --file Dockerfile  --pull --platform=$(PLATFORM) --tag $(IMAGE) --load .
+
+.PHONY: remove
+remove:	## Stop and remove the buildx builder
+	$(info Stopping and removing the builder image...)
+	docker buildx stop
+	docker buildx rm
