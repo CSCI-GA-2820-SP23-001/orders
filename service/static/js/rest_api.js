@@ -56,9 +56,9 @@ $(function () {
         let city = $("#order_city").val();
         let state = $("#order_state").val();
         let postal_code = $("#order_postal_code").val();
-        let date_created = $("#order_date_created").val();
-        let shipping_price = $("#order_shipping_price").val();
-        let status = $("#order_status").val();
+        // let date_created = $("#order_date_created").val();
+        // let shipping_price = $("#order_shipping_price").val();
+        // let status = $("#order_status").val();
 
 
         let data = {
@@ -67,9 +67,9 @@ $(function () {
             "city": city,
             "state": state,
             "postal_code": postal_code,
-            "date_created": date_created,
-            "shipping_price": shipping_price,
-            "status": status
+            // "date_created": date_created,
+            // "shipping_price": shipping_price,
+            // "status": status
 
         };
 
