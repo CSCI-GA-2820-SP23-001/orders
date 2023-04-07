@@ -5,7 +5,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="static/css/blue_bootstrap.min.css">
+    <link rel="icon" type="image/x-icon" href="static/images/OrderAppIcon.png">
+    <link rel="stylesheet" href="static/css/cerulean_bootstrap.min.css">
   </head>
   <body>
     <div class="container">
@@ -13,36 +14,29 @@
           <h1>Order Service</h1>
       </div>
 
-      <div class="row">
-        <div class="column col-md-10">
-          <p class='description'>
-            GET <a href="/orders" id = "get_orders">/orders</a> to see all the orders.
-            <br>
-            <!-- would this be the status? -->
-            <!-- GET <a href="/orders?category=dog">/pets?category=dog</a> to see all of the pets in the 'dog' category. -->
-            <br>
-            GET /orders/{id} retrieves an order from the DB using the order ID.
-            <br>
-            PUT /orders/{id} updates an order using an order ID.
-            <br>
-            DELETE /orders/{id} removes an order from the DB using an order ID.
-            <br>
-            POST /orders creates a new order.
-          </p>
-        </div>
-        <div class="column col-md-2">
-          <img src="static/images/OrderAppIcon.png" alt="Order Service" width="150" height="150">
-        </div>
+      <!-- Flash Message -->
+      <div class="table-responsive">
+        <table class="table">
+          <tr><td>Status:</td><td><span id="flash_message"></span></td></tr>
+        </table>
       </div>
-      <p>Example JSON Data:</p>
-      <!-- Ensure iso format date -->
-      <pre>{"name": "Emilie Pourchet", "street": "10 Orchard St", "city": "New York", "state": "New York", "postal code": "10009"}</pre>
 
       <!-- FORM -->
-      <form id="create_order" action="/orders" method="post" enctype="application/json">      
       <div class="col-md-12" id="form_data">
-        <h3>Enter information to create an order:</h3>
+        <h3>Create, Retrieve, Update, and Delete an Order:</h3>
         <div class="well">
+          <div class="form-horizontal">
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="order_id">Order ID:</label>
+              <div class="col-sm-6">
+                <input type="text" class="form-control" id="order_id" placeholder="Enter ID of the Order">
+              </div>
+              <div class="col-sm-4">
+                <button type="submit" class="btn btn-primary" id="retrieve-btn">Retrieve</button>
+                <button type="submit" class="btn btn-danger" id="delete-btn">Delete</button>
+              </div>
+            </div>
+          </div> <!-- form horizontal -->
 
           <div class="form-horizontal">
 
@@ -102,14 +96,35 @@
             <!-- SUBMIT BUTTONS -->
             <div class="form-group">
               <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-success" id="submit">Create</button>
+                <button type="submit" class="btn btn-primary" id="search-btn">Search</button>
+                <button type="submit" class="btn btn-primary" id="clear-btn">Clear</button>
+                <button type="submit" class="btn btn-success" id="create-btn">Create</button>
+                <button type="submit" class="btn btn-warning" id="update-btn">Update</button>
               </div>
             </div>
-
           </div> <!-- form horizontal -->
         </div> <!-- end well -->
       </div> <!-- end Form -->
-      </form>
+
+      <!-- Search Results -->
+      <div class="table-responsive col-md-12" id="search_results">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th class="col-md-1">ID</th>
+            <th class="col-md-4">Name</th>
+            <th class="col-md-4">Street</th>
+            <th class="col-md-3">City</th>
+            <th class="col-md-3">State</th>
+            <th class="col-md-3">Postal_Code</th>
+            <th class="col-md-3">Shipping_Price</th>
+            <th class="col-md-3">Date_Created</th>
+            <th class="col-md-3">Status</th>
+
+          </tr>
+          </thead>
+        </table>
+      </div>
 
       <footer>
         <br><br>
@@ -118,7 +133,11 @@
 
     </div> <!-- container -->
 
+  <script type="text/javascript" src = "static/js/jquery-3.6.0.min.js"></script>
   <script type="text/javascript" src = "static/js/bootstrap.min.js"></script>
+
+  <!-- YOUR REST API -->
+  <script type="text/javascript" src="static/js/rest_api.js"></script>
 
   </body>
 </html>
