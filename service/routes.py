@@ -106,7 +106,7 @@ def list_orders():
 
     # Return as an array of dictionaries
     results = [order.serialize() for order in orders]
-    app.logger.info("[%s] Orders returned", len(results)) 
+    app.logger.info("[%s] Orders returned", len(results))
     return make_response(jsonify(results), status.HTTP_200_OK)
 
 
