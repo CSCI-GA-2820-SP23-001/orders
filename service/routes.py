@@ -18,14 +18,8 @@ from . import app
 @app.route("/")
 def index():
     """Root URL response"""
-    return (
-        jsonify(
-            name="Orders REST API Service",
-            version="1.0",
-            paths=url_for("list_orders", _external=True),
-        ),
-        status.HTTP_200_OK,
-    )
+    app.logger.info("Request for Root URL")
+    return app.send_static_file("index.html")
 
 
 ######################################################################
@@ -47,9 +41,12 @@ def create_order():
     check_content_type("application/json")
 
     # Create the order
+    data = request.get_json()
+    app.logger.info("Processing: %s", data)
     order = Order()
     order.deserialize(request.get_json())
     order.create()
+    app.logger.info("Order with new id [%s] saved!", order.id)
 
     # Create a message to return
     message = order.serialize()
@@ -80,7 +77,7 @@ def get_orders(order_id):
             status.HTTP_404_NOT_FOUND,
             f"Order with id '{order_id}' could not be found.",
         )
-
+    app.logger.info("Returning order: %s", order.name)
     return make_response(jsonify(order.serialize()), status.HTTP_200_OK)
 
 
@@ -109,7 +106,7 @@ def list_orders():
 
     # Return as an array of dictionaries
     results = [order.serialize() for order in orders]
-
+    app.logger.info("[%s] Orders returned", len(results))
     return make_response(jsonify(results), status.HTTP_200_OK)
 
 
@@ -134,6 +131,8 @@ def update_orders(order_id):
               f"Order with id '{order_id}' was not found.")
 
     # Update from the json in the body of the request
+    data = request.get_json()
+    app.logger.info(data)
     order.deserialize(request.get_json())
     order.id = order_id
     order.update()
