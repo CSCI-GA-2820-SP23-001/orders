@@ -26,8 +26,6 @@ $(function () {
 
     /// Clears all form fields
     function clear_form_data() {
-        $("#pet_name").val("");
-
         $("#order_id").val("");
         $("#order_name").val("");
         $("#order_street").val("");
@@ -58,7 +56,7 @@ $(function () {
         let postal_code = $("#order_postal_code").val();
         // let date_created = $("#order_date_created").val();
         // let shipping_price = $("#order_shipping_price").val();
-        // let status = $("#order_status").val();
+        let status = $("#order_status").val();
 
 
         let data = {
@@ -67,11 +65,9 @@ $(function () {
             "city": city,
             "state": state,
             "postal_code": postal_code,
-            // "date_created": date_created,
-            // "shipping_price": shipping_price,
-            // "status": status
-
+            "status": status
         };
+        console.log(data);
 
         $("#flash_message").empty();
         
@@ -98,7 +94,7 @@ $(function () {
     // ****************************************
 
     $("#update-btn").click(function () {
-
+        let order_id = $("#order_id").val();
         let name = $("#order_name").val();
         let street = $("#order_street").val();
         let city = $("#order_city").val();

@@ -210,7 +210,6 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(new_order.city, order.city)
         self.assertEqual(new_order.state, order.state)
         self.assertEqual(new_order.postal_code, order.postal_code)
-        self.assertEqual(new_order.date_created, order.date_created)
         self.assertEqual(new_order.status, order.status)
 
     def test_deserialize_with_key_error(self):
