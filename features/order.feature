@@ -75,15 +75,38 @@ Scenario: Search for available
     And I should see "kitty" in the results
     And I should see "sammy" in the results
     And I should not see "leo" in the results
-
-Scenario: Update a Pet
+    
+Scenario: Delete an Order
     When I visit the "Home Page"
-    And I set the "Name" to "fido"
+    And I set the "Name" to "Emilie Pourchet"
+    And I set the "Street" to "9 Front Street"
+    And I set the "City" to "New York"
+    And I set the "State" to "NY"
+    And I set the "Postal Code" to "10543"
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    Then the "Id" field should be empty
+    And the "Name" field should be empty
+    And the "Street" field should be empty
+    And the "City" field should be empty
+    And the "State" field should be empty
+    And the "Postal Code" field should be empty
+    When I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see the message "Success"
+    And I should see "Emilie Pourchet" in the "Name" field
+
+
+Scenario: Update aon Order
+    When I visit the "Home Page"
+    And I set the "Name" to "Jane Doe"
     And I press the "Search" button
     Then I should see the message "Success"
-    And I should see "fido" in the "Name" field
-    And I should see "dog" in the "Category" field
-    When I change "Name" to "Loki"
+    And I should see "Jane Doe" in the "Name" field
+    And I should see "140 E 7th Street" in the "street" field
+    When I change "Name" to "Victoria Obasa"
     And I press the "Update" button
     Then I should see the message "Success"
     When I copy the "Id" field
@@ -91,9 +114,9 @@ Scenario: Update a Pet
     And I paste the "Id" field
     And I press the "Retrieve" button
     Then I should see the message "Success"
-    And I should see "Loki" in the "Name" field
+    And I should see "Victoria Obasa" in the "Name" field
     When I press the "Clear" button
     And I press the "Search" button
     Then I should see the message "Success"
-    And I should see "Loki" in the results
-    And I should not see "fido" in the results
+    And I should see "Victoria Obasa" in the results
+    And I should not see "Jane Doe" in the results
