@@ -8,11 +8,11 @@ Test cases can be run with the following:
 import os
 import logging
 from unittest import TestCase
+from itertools import cycle
 from tests.factories import ItemFactory, OrderFactory
 from service.common import status  # HTTP Status Codes
 from service.models import db, Order, init_db
 from service.routes import app
-from itertools import cycle
 
 
 DATABASE_URI = os.getenv(

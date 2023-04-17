@@ -22,9 +22,8 @@ Steps file for order.feature
 For information on Waiting until elements are present in the HTML see:
     https://selenium-python.readthedocs.io/waits.html
 """
-import os
 import requests
-from behave import given, when, then
+from behave import given
 from compare import expect
 
 
