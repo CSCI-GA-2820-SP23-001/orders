@@ -88,24 +88,26 @@ Scenario: Read and Update an Order
     And I press the "Search" button
     Then I should see the message "Success"
     And I should see "Victoria Obasa" in the results
-    And I should not see "Jane Doe" in the results
-    
-    
+    And I should not see "Jane Doe" in the results'''
+
+
 Scenario: List all orders
     When I visit the "Home Page"
     And I press the "Search" button
     Then I should see the message "Success"
     And I should see "Emilie Pourchet" in the results
     And I should see "Jane Doe" in the results
-    And I should not see "John Doe" in the results
+    And I should see "John Doe" in the results
+    And I should see "Random Name" in the results
 
 
-Scenario: Query for city
+Scenario: Query for name
     When I visit the "Home Page"
-    And I set the "city" to "new york"
+    And I set the "name" to "Emilie Pourchet"
     And I press the "Search" button
     Then I should see the message "Success"
     And I should see "Emilie Pourchet" in the results
     And I should not see "Jane Doe" in the results
     And I should not see "John Doe" in the results
+    
 
