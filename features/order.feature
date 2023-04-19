@@ -42,25 +42,6 @@ Scenario: Create an Order
     And I should see "NY" in the "State" field
     And I should see "10543" in the "Postal Code" field
 
-Scenario: List all orders
-    When I visit the "Home Page"
-    And I press the "Search" button
-    Then I should see the message "Success"
-    And I should see "Emilie Pourchet" in the results
-    And I should see "Jane Doe" in the results
-    And I should not see "John Doe" in the results
-
-
-Scenario: Query for city
-    When I visit the "Home Page"
-    And I set the "city" to "new york"
-    And I press the "Search" button
-    Then I should see the message "Success"
-    And I should see "Emilie Pourchet" in the results
-    And I should not see "Jane Doe" in the results
-    And I should not see "John Doe" in the results
-
-
 Scenario: Delete an Order
     When I visit the "Home Page"
     And I set the "Name" to "Emilie Pourchet"
@@ -108,3 +89,23 @@ Scenario: Read and Update an Order
     Then I should see the message "Success"
     And I should see "Victoria Obasa" in the results
     And I should not see "Jane Doe" in the results
+    
+    
+Scenario: List all orders
+    When I visit the "Home Page"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Emilie Pourchet" in the results
+    And I should see "Jane Doe" in the results
+    And I should not see "John Doe" in the results
+
+
+Scenario: Query for city
+    When I visit the "Home Page"
+    And I set the "city" to "new york"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Emilie Pourchet" in the results
+    And I should not see "Jane Doe" in the results
+    And I should not see "John Doe" in the results
+
