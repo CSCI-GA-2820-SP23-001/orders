@@ -42,6 +42,49 @@ Scenario: Create an Order
     And I should see "NY" in the "State" field
     And I should see "10543" in the "Postal Code" field
 
+Scenario: List all orders
+    When I visit the "Home Page"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Emilie Pourchet" in the results
+    And I should see "Jane Doe" in the results
+    And I should see "John Doe" in the results
+    And I should see "Random Name" in the results
+
+
+Scenario: Query for name
+    When I visit the "Home Page"
+    And I set the "name" to "Emilie Pourchet"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Emilie Pourchet" in the results
+    And I should not see "Jane Doe" in the results
+    And I should not see "John Doe" in the results
+
+
+Scenario: Read and Update an Order
+    When I visit the "Home Page"
+    And I set the "Name" to "Jane Doe"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Jane Doe" in the "Name" field
+    And I should see "140 E 7th Street" in the "street" field
+    When I change "Name" to "Victoria Obasa"
+    And I press the "Update" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see the message "Success"
+    And I should see "Victoria Obasa" in the "Name" field
+    When I press the "Clear" button
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Victoria Obasa" in the results
+    And I should not see "Jane Doe" in the results
+
+
 Scenario: Delete an Order
     When I visit the "Home Page"
     And I set the "Name" to "Emilie Pourchet"
@@ -67,47 +110,5 @@ Scenario: Delete an Order
     When I paste the "ID" field
     And I press the "Retrieve" button
     Then I should see the message "NOT FOUND"
-
-Scenario: Read and Update an Order
-    When I visit the "Home Page"
-    And I set the "Name" to "Jane Doe"
-    And I press the "Search" button
-    Then I should see the message "Success"
-    And I should see "Jane Doe" in the "Name" field
-    And I should see "140 E 7th Street" in the "street" field
-    When I change "Name" to "Victoria Obasa"
-    And I press the "Update" button
-    Then I should see the message "Success"
-    When I copy the "Id" field
-    And I press the "Clear" button
-    And I paste the "Id" field
-    And I press the "Retrieve" button
-    Then I should see the message "Success"
-    And I should see "Victoria Obasa" in the "Name" field
-    When I press the "Clear" button
-    And I press the "Search" button
-    Then I should see the message "Success"
-    And I should see "Victoria Obasa" in the results
-    And I should not see "Jane Doe" in the results'''
-
-
-Scenario: List all orders
-    When I visit the "Home Page"
-    And I press the "Search" button
-    Then I should see the message "Success"
-    And I should see "Emilie Pourchet" in the results
-    And I should see "Jane Doe" in the results
-    And I should see "John Doe" in the results
-    And I should see "Random Name" in the results
-
-
-Scenario: Query for name
-    When I visit the "Home Page"
-    And I set the "name" to "Emilie Pourchet"
-    And I press the "Search" button
-    Then I should see the message "Success"
-    And I should see "Emilie Pourchet" in the results
-    And I should not see "Jane Doe" in the results
-    And I should not see "John Doe" in the results
     
 
