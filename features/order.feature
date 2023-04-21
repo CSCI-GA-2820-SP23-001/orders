@@ -107,8 +107,8 @@ Scenario: Delete an Order
     Then I should see the message "Order has been Deleted!"
     Then the "Id" field should be empty
     And the "Name" field should be empty
-    When I paste the "ID" field
-    And I press the "Retrieve" button
-    Then I should not see the message "Success"
+    When I press the "Search" button
+    Then I should see the message "Success"
+    And I should not see "Emilie Pourchet" in the results
     
 
