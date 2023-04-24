@@ -87,12 +87,14 @@ Scenario: Read and Update an Order
 
 Scenario: Delete an Order
     When I visit the "Home Page"
-    And I set the "Name" to "Emilie Pourchet"
-    And I set the "Street" to "9 Front Street"
-    And I set the "City" to "New York"
-    And I set the "State" to "NY"
-    And I set the "Postal Code" to "10543"
-    And I press the "Create" button
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Emilie Pourchet" in the results
+    And I should see "Jane Doe" in the results
+    And I should see "John Doe" in the results
+    And I should see "Random Name" in the results
+    When I set the "name" to "Emilie Pourchet"
+    And I press the "Search" button
     Then I should see the message "Success"
     When I copy the "Id" field
     And I press the "Clear" button
@@ -103,12 +105,15 @@ Scenario: Delete an Order
     And the "State" field should be empty
     And the "Postal Code" field should be empty
     When I paste the "Id" field
-    And I press the "Delete" button
+    And I press the "Retrieve" button
+    Then I should see the message "Success"
+    And I should see "Emilie Pourchet" in the "Name" field
+    And I should see "9 Front Street" in the "Street" field
+    And I should see "New York" in the "City" field
+    And I should see "NY" in the "State" field
+    And I should see "10543" in the "Postal Code" field
+    When I press the "Delete" button
     Then I should see the message "Order has been Deleted!"
-    Then the "Id" field should be empty
-    And the "Name" field should be empty
     When I press the "Search" button
     Then I should see the message "Success"
     And I should not see "Emilie Pourchet" in the results
-    
-
