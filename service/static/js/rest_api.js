@@ -239,10 +239,10 @@ $(function () {
     $("#search-btn").click(function () {
 
         let name = $("#order_name").val();
-        // let street = $("#order_street").val();
-        // let city = $("#order_city").val();
-        // let state = $("#order_state").val();
-        // let postal_code = $("#order_postal_code").val();
+        let street = $("#order_street").val();
+        let city = $("#order_city").val();
+        let state = $("#order_state").val();
+        let postal_code = $("#order_postal_code").val();
         // let date_created = $("#order_date_created").val();
         // let shipping_price = $("#order_shipping_price").val();
         // let status = $("#order_status").val();
@@ -287,18 +287,18 @@ $(function () {
             table += '<th class="col-md-2">City</th>'
             table += '<th class="col-md-2">State</th>'
             table += '<th class="col-md-2">Postal_Code</th>'
-            table += '<th class="col-md-2">Date_Created</th>'
-            table += '<th class="col-md-2">Shipping_Price</th>'
-            table += '<th class="col-md-2">Status</th>'
+            //table += '<th class="col-md-2">Date_Created</th>'
+            //table += '<th class="col-md-2">Shipping_Price</th>'
+            //table += '<th class="col-md-2">Status</th>'
 
 
             table += '</tr></thead><tbody>'
             let firstOrder = "";
             for(let i = 0; i < res.length; i++) {
                 let order = res[i];
-                table +=  `<tr id="row_${i}"><td>${order.id}</td><td>${order.name}</td><td>${order.street}</td><td>${order.city}</td><td>${order.state}</td><td>${order.postal_code}</td><td>${order.shipping_price}</td><td>${order.date_created}</td><td>${order.status}</td></tr>`;
+                table +=  `<tr id="row_${i}"><td>${order.id}</td><td>${order.name}</td><td>${order.street}</td><td>${order.city}</td><td>${order.state}</td><td>${order.postal_code}</td>`;
                 if (i == 0) {
-                    firstOrder = Order;
+                    firstOrder = order;
                 }
             }
             table += '</tbody></table>';
