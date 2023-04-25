@@ -42,6 +42,22 @@ Scenario: Create an Order
     And I should see "NY" in the "State" field
     And I should see "10543" in the "Postal Code" field
 
+## CANCEL STATUS
+Scenario: Cancel order
+    When I visit the "Home Page"
+    And I set the "Name" to "Emilie Pourchet"
+    And I set the "Street" to "9 Front Street"
+    And I set the "City" to "New York"
+    And I set the "State" to "NY"
+    And I set the "Postal Code" to "10543"
+    And I select "Open" in the "Status" dropdown
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Cancel" button
+    Then I should see "Cancelled" in the "Status" dropdown
+
+
 Scenario: List all pets
     When I visit the "Home Page"
     And I press the "Search" button
@@ -94,18 +110,14 @@ Scenario: Update a Pet
 ## CANCEL STATUS
 Scenario: Cancel order
     When I visit the "Home Page"
-    Then I should see "Order Service" in the title
-    And I press the "Search" button
-    And I press the "Status" press button
-    And I press the "Cancel" dropdown
-    And I press the "Update" button
+    And I set the "Name" to "Emilie Pourchet"
+    And I set the "Street" to "9 Front Street"
+    And I set the "City" to "New York"
+    And I set the "State" to "NY"
+    And I set the "Postal Code" to "10543"
+    And I select "Open" in the "Status" dropdown
+    And I press the "Create" button
     Then I should see the message "Success"
-    When I paste the "Id" field
-    And I press the "Retrieve" button
-    Then I should see the message "Success"
-    And I should see "Emilie Pourchet" in the "Name" field
-    And I should see "9 Front Street" in the "Street" field
-    And I should see "New York" in the "City" field
-    And I should see "NY" in the "State" field
-    And I should see "10543" in the "Postal Code" field
-    And I should see "Canceled" in the "status"
+    When I copy the "Id" field
+    And I press the "Cancel" button
+    Then I should see "Cancelled" in the "Status" dropdown
