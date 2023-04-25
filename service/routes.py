@@ -167,6 +167,7 @@ def delete_orders(order_id):
 @app.route("/orders/<int:order_id>/cancel", methods=["PUT"])
 def cancel_order(order_id):
     """Canceling an order changes its status to Cancelled"""
+    app.logger.info("Request to cancel an order with id: %s", order_id)
     order = Order.find(order_id)
     if not order:
         abort(status.HTTP_404_NOT_FOUND,
@@ -177,6 +178,7 @@ def cancel_order(order_id):
             f"Order with id '{order_id}' is already shipped or fulfilled and cannot be cancelled.",
         )
     # Set order to Cancelled
+    app.logger.info("Order ID %s  cancelled", order_id)
     order.status = "Cancelled"
     order.update()
     return order.serialize(), status.HTTP_200_OK

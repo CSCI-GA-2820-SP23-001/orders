@@ -97,3 +97,22 @@ Scenario: Update a Pet
     Then I should see the message "Success"
     And I should see "Loki" in the results
     And I should not see "fido" in the results
+
+## CANCEL STATUS
+Scenario: Cancel order
+    When I visit the "Home Page"
+    Then I should see "Order Service" in the title
+    And I press the "Search" button
+    And I press the "Status" press button
+    And I press the "Cancel" dropdown
+    And I press the "Update" button
+    Then I should see the message "Success"
+    When I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see the message "Success"
+    And I should see "Emilie Pourchet" in the "Name" field
+    And I should see "9 Front Street" in the "Street" field
+    And I should see "New York" in the "City" field
+    And I should see "NY" in the "State" field
+    And I should see "10543" in the "Postal Code" field
+    And I should see "Canceled" in the "status"

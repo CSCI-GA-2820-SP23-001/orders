@@ -165,6 +165,36 @@ $(function () {
 
     });
 
+        // ****************************************
+    // Cancel an Order
+    // ****************************************
+
+    $("#cancel-btn").click(function () {
+
+        let order_id = $("#order_id").val();
+
+        $("#flash_message").empty();
+
+        let ajax = $.ajax({
+            type: "PUT",
+            url:`/orders/${order_id}/cancel`,
+            contentType: "application/json",
+            data: ''
+        })
+
+        ajax.done(function(res){
+            //alert(res.toSource())
+            update_form_data(res)
+            flash_message("Success")
+        });
+
+        ajax.fail(function(res){
+            clear_form_data()
+            flash_message(res.responseJSON.message)
+        });
+
+    });
+    
     // ****************************************
     // Delete an order
     // ****************************************
