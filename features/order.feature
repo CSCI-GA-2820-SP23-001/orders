@@ -23,9 +23,6 @@ Scenario: Create an Order
     And I set the "City" to "New York"
     And I set the "State" to "NY"
     And I set the "Postal Code" to "10543"
-    # And I select "False" in the "Available" dropdown
-    # And I select "Male" in the "Gender" dropdown
-    # And I set the "Birthday" to "06-16-2022"
     And I press the "Create" button
     Then I should see the message "Success"
     When I copy the "Id" field
@@ -44,10 +41,6 @@ Scenario: Create an Order
     And I should see "New York" in the "City" field
     And I should see "NY" in the "State" field
     And I should see "10543" in the "Postal Code" field
-
-    # And I should see "False" in the "Available" dropdown
-    # And I should see "Male" in the "Gender" dropdown
-    # And I should see "2022-06-16" in the "Birthday" field
 
 Scenario: List all pets
     When I visit the "Home Page"
