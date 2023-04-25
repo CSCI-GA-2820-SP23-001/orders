@@ -23,9 +23,6 @@ Scenario: Create an Order
     And I set the "City" to "New York"
     And I set the "State" to "NY"
     And I set the "Postal Code" to "10543"
-    # And I select "False" in the "Available" dropdown
-    # And I select "Male" in the "Gender" dropdown
-    # And I set the "Birthday" to "06-16-2022"
     And I press the "Create" button
     Then I should see the message "Success"
     When I copy the "Id" field
@@ -45,45 +42,50 @@ Scenario: Create an Order
     And I should see "NY" in the "State" field
     And I should see "10543" in the "Postal Code" field
 
-    # And I should see "False" in the "Available" dropdown
-    # And I should see "Male" in the "Gender" dropdown
-    # And I should see "2022-06-16" in the "Birthday" field
+## CANCEL STATUS
+Scenario: Cancel order
+    When I visit the "Home Page"
+    And I set the "Name" to "Emilie Pourchet"
+    And I set the "Street" to "9 Front Street"
+    And I set the "City" to "New York"
+    And I set the "State" to "NY"
+    And I set the "Postal Code" to "10543"
+    And I select "Open" in the "Status" dropdown
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Cancel" button
+    Then I should see "Cancelled" in the "Status" dropdown
+
 
 Scenario: List all pets
     When I visit the "Home Page"
     And I press the "Search" button
     Then I should see the message "Success"
-    And I should see "fido" in the results
-    And I should see "kitty" in the results
-    And I should not see "leo" in the results
+    And I should see "Emilie Pourchet" in the results
+    And I should see "Jane Doe" in the results
+    And I should see "John Doe" in the results
+    And I should see "Random Name" in the results
 
-Scenario: Search for dogs
+
+Scenario: Query for name
     When I visit the "Home Page"
-    And I set the "Category" to "dog"
+    And I set the "name" to "Emilie Pourchet"
     And I press the "Search" button
     Then I should see the message "Success"
-    And I should see "fido" in the results
-    And I should not see "kitty" in the results
-    And I should not see "leo" in the results
+    And I should see "Emilie Pourchet" in the results
+    And I should not see "Jane Doe" in the results
+    And I should not see "John Doe" in the results
 
-Scenario: Search for available
+
+Scenario: Read and Update an Order
     When I visit the "Home Page"
-    And I select "True" in the "Available" dropdown
+    And I set the "Name" to "Jane Doe"
     And I press the "Search" button
     Then I should see the message "Success"
-    And I should see "fido" in the results
-    And I should see "kitty" in the results
-    And I should see "sammy" in the results
-    And I should not see "leo" in the results
-
-Scenario: Update a Pet
-    When I visit the "Home Page"
-    And I set the "Name" to "fido"
-    And I press the "Search" button
-    Then I should see the message "Success"
-    And I should see "fido" in the "Name" field
-    And I should see "dog" in the "Category" field
-    When I change "Name" to "Loki"
+    And I should see "Jane Doe" in the "Name" field
+    And I should see "140 E 7th Street" in the "street" field
+    When I change "Name" to "Victoria Obasa"
     And I press the "Update" button
     Then I should see the message "Success"
     When I copy the "Id" field
@@ -91,9 +93,22 @@ Scenario: Update a Pet
     And I paste the "Id" field
     And I press the "Retrieve" button
     Then I should see the message "Success"
-    And I should see "Loki" in the "Name" field
+    And I should see "Victoria Obasa" in the "Name" field
     When I press the "Clear" button
     And I press the "Search" button
     Then I should see the message "Success"
-    And I should see "Loki" in the results
-    And I should not see "fido" in the results
+
+## CANCEL STATUS
+Scenario: Cancel order
+    When I visit the "Home Page"
+    And I set the "Name" to "Emilie Pourchet"
+    And I set the "Street" to "9 Front Street"
+    And I set the "City" to "New York"
+    And I set the "State" to "NY"
+    And I set the "Postal Code" to "10543"
+    And I select "Open" in the "Status" dropdown
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Cancel" button
+    Then I should see "Cancelled" in the "Status" dropdown

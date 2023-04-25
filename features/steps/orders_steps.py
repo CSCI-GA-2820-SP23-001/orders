@@ -31,7 +31,7 @@ from compare import expect
 def step_impl(context):
     """ Delete all Orders and load new ones """
     # List all of the orders and delete them one by one
-    rest_endpoint = f"{context.BASE_URL}/pets"
+    rest_endpoint = f"{context.BASE_URL}/orders"
     context.resp = requests.get(rest_endpoint)
     expect(context.resp.status_code).to_equal(200)
     for order in context.resp.json():
@@ -45,10 +45,7 @@ def step_impl(context):
             "street": row['street'],
             "city": row['city'],
             "state": row['state'],
-            "postal code": row['postal code'],
-            # "available": row['available'] in ['True', 'true', '1'],
-            # "gender": row['gender'],
-            # "birthday": row['birthday']
+            "postal_code": row['postal code']
         }
         context.resp = requests.post(rest_endpoint, json=payload)
         expect(context.resp.status_code).to_equal(201)
