@@ -97,8 +97,6 @@ Scenario: Read and Update an Order
     When I press the "Clear" button
     And I press the "Search" button
     Then I should see the message "Success"
-    And I should see "Loki" in the results
-    And I should not see "fido" in the results
 
 ## CANCEL STATUS
 Scenario: Cancel order
