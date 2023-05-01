@@ -255,11 +255,15 @@ def list_items(order_id):
 
 
 @app.route("/orders/<int:order_id>/items/<int:item_id>", methods=["GET"])
-def get_items(item_id):
+def get_items(order_id, item_id):
     """
     Get an Address
     This endpoint returns just an address
     """
+    app.logger.info(
+        "Request to retrieve Address %s for Account id: %s", (
+        item_id, order_id)
+    )
 
     # See if the address exists and abort if it doesn't
     item = Item.find(item_id)
@@ -278,12 +282,13 @@ def get_items(item_id):
 
 
 @app.route("/orders/<int:order_id>/items/<int:item_id>", methods=["PUT"])
-def update_items(item_id):
+def update_items(order_id, item_id):
     """
     Update an Item
     This endpoint will update an Item based the body that is posted
     """
-
+    app.logger.info("Request to update Item %s for Order id: %s",
+                    (item_id, order_id))
     check_content_type("application/json")
 
     # See if the item exists and abort if it doesn't
@@ -308,11 +313,13 @@ def update_items(item_id):
 
 
 @app.route("/orders/<int:order_id>/items/<int:item_id>", methods=["DELETE"])
-def delete_items(item_id):
+def delete_items(order_id, item_id):
     """
     Delete an Order Item
     This endpoint will delete an item based the id specified in the path
     """
+    app.logger.info("Request to delete item %s for order id: %s",
+                    (order_id, item_id))
 
     # See if the item exists and delete it if it does
     item = Item.find(item_id)
