@@ -255,7 +255,7 @@ def list_items(order_id):
 
 
 @app.route("/orders/<int:order_id>/items/<int:item_id>", methods=["GET"])
-def get_items(order_id, item_id):
+def get_items(item_id):
     """
     Get an Address
     This endpoint returns just an address
@@ -278,7 +278,7 @@ def get_items(order_id, item_id):
 
 
 @app.route("/orders/<int:order_id>/items/<int:item_id>", methods=["PUT"])
-def update_items(order_id, item_id):
+def update_items(item_id):
     """
     Update an Item
     This endpoint will update an Item based the body that is posted
@@ -308,7 +308,7 @@ def update_items(order_id, item_id):
 
 
 @app.route("/orders/<int:order_id>/items/<int:item_id>", methods=["DELETE"])
-def delete_items(order_id, item_id):
+def delete_items(item_id):
     """
     Delete an Order Item
     This endpoint will delete an item based the id specified in the path
