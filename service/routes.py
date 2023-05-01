@@ -262,7 +262,7 @@ def get_items(order_id, item_id):
     """
     app.logger.info(
         "Request to retrieve Address %s for Account id: %s", (
-        item_id, order_id)
+            item_id, order_id)
     )
 
     # See if the address exists and abort if it doesn't
