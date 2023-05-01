@@ -260,6 +260,7 @@ def get_items(order_id, item_id):
     Get an Address
     This endpoint returns just an address
     """
+    # pylint: disable=logging-too-few-args
     app.logger.info(
         "Request to retrieve Address %s for Account id: %s", (
             item_id, order_id)
@@ -287,6 +288,7 @@ def update_items(order_id, item_id):
     Update an Item
     This endpoint will update an Item based the body that is posted
     """
+    # pylint: disable=logging-too-few-args
     app.logger.info("Request to update Item %s for Order id: %s",
                     (item_id, order_id))
     check_content_type("application/json")
@@ -318,6 +320,7 @@ def delete_items(order_id, item_id):
     Delete an Order Item
     This endpoint will delete an item based the id specified in the path
     """
+    # pylint: disable=logging-too-few-args
     app.logger.info("Request to delete item %s for order id: %s",
                     (order_id, item_id))
 
