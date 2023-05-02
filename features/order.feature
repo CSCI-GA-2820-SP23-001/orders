@@ -43,7 +43,7 @@ Scenario: Create an Order
     And I should see "10543" in the "Postal Code" field
 
 
-Scenario: List all pets
+Scenario: List all orders
     When I visit the "Home Page"
     And I press the "Search" button
     Then I should see the message "Success"
